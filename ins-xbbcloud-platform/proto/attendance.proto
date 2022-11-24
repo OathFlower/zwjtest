@@ -1,0 +1,406 @@
+syntax = "proto3";
+
+package xbbcloud;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+option java_package = "cn.xunhou.grpc.proto.xbbcloud";
+option java_outer_classname = "AttendanceServerProto";
+
+
+//考勤打卡相关
+service AttendanceServer {
+
+    //确认工时
+    rpc confirm (ConfirmRequest) returns (google.protobuf.Empty) {}
+    //调整工时
+    rpc adjust (AdjustRequest) returns (google.protobuf.Empty) {}
+    //打卡配置
+    rpc settings (QuerySettingsRequest) returns (AttendanceSetting) {}
+    //保存配置
+    rpc saveSetting (AttendanceSetting) returns (google.protobuf.Empty) {}
+    //开工
+    rpc punchIn (PunchInBeRequest) returns (PunchBeResponse) {}
+    //完工
+    rpc punchOut (PunchOutBeRequest) returns (PunchBeResponse) {}
+    //更新考勤打卡记录
+    rpc updateRecord (UpdateAttendanceRecordBeRequest) returns (google.protobuf.Empty) {}
+    //通过id查询打卡记录
+    rpc findRecordById (AttendanceRecordIdBeRequest) returns (RecordDetailBeResponse) {}
+    //打卡分页列表
+    rpc findRecordPageList (RecordQueryConditionBeRequest) returns (RecordPageListBeResponse) {}
+    //打卡条件查询
+    rpc findRecordByCondition (RecordQueryConditionBeRequest) returns (RecordListBeResponse) {}
+    //考勤打卡账单批次详情查询
+    rpc findBillBatchDetailList (BillBatchDetailQueryConditionBeRequest) returns (BillBatchDetailListBeResponse) {}
+    //xxJob调用
+    rpc runXxlJob (RunXxlJobRequest) returns (google.protobuf.Empty) {}
+
+    rpc deleteAttendanceAddress (DeleteAttendanceAddressRequest) returns (google.protobuf.Empty) {};
+}
+
+message DeleteAttendanceAddressRequest {
+    int64 attendanceAddressId = 1 [(validate.rules).int64.gt = 0];
+}
+message RunXxlJobRequest {
+    //job 处理器
+    string jobHandler = 1;
+    //参数
+    string param = 2;
+}
+message BillBatchDetailQueryConditionBeRequest {
+    //考勤打卡记录id
+    repeated int64 attendanceRecordId = 1;
+    //租户id
+    repeated int64 tenantId = 2;
+    //状态
+    optional BillStatusEnum billStatusEnum = 3;
+
+}
+
+message BillBatchDetailListBeResponse {
+    repeated BillBatchDetailBeResponse dataList = 1;
+}
+
+message BillBatchDetailBeResponse {
+    //考勤打卡账单批次详情主键
+    int64 id = 1;
+    //租户id
+    int64 tenantId = 2;
+    //薪资账单批次id
+    int64 salaryAttendanceBillBatchId = 3;
+    //考勤打卡记录id
+    int64 attendanceRecordId = 4;
+    //开户行
+    string bankName = 8;
+    //金额
+    string money = 5;
+    //状态
+    BillStatusEnum billStatusEnum = 6;
+    //子状态
+    BillSubStatusEnum billSubStatusEnum = 9;
+    //发薪方式
+    BillPayType billPayType = 7;
+
+}
+
+enum BillSubStatusEnum{
+
+    //0发薪失败
+    BILL_SUB_FAIL = 0;
+    // 1 发薪成功
+    BILL_SUB_SUCCESS = 1;
+}
+
+//发薪方式
+enum BillPayType {
+    BPT_UNKNOWN = 0;
+    //支付宝发薪
+    BPT_ALIPAY_PAY = 1;
+    //微信发薪
+    BPT_WECHAT_PAY = 2;
+    //网银发薪
+    BPT_ONLINE_BANKING_PAY = 3;
+    //邮件发薪
+    BPT_MAIL_PAY = 4;
+    //线下发薪
+    BPT_OFFICE_PAY = 5;
+}
+
+//发薪状态
+enum BillStatusEnum {
+    //待发送
+    BILL_WAIT_SEND = 0;
+    //发薪待审核
+    BILL_WAIT_REVIEW = 1;
+    //发薪已审核
+    BILL_REVIEWED = 2;
+}
+
+
+
+//查询配置
+message QuerySettingsRequest {
+    //租户id
+    optional int32 tenantId = 1;
+}
+
+//打卡配置
+message AttendanceSetting {
+    //打卡地点
+    repeated AttendanceAddress addressList = 1;
+    //工时计算单位
+    optional AttendanceCalculateUnit calculateUnit = 2;
+    //每日最高结算工时
+    optional int32 maxSettlementHour = 3;
+    //配置id
+    optional int64 commonSettingsId = 4;
+}
+
+//打卡地点
+message AttendanceAddress {
+    optional int64 attendanceAddressId = 1;
+    //定位地址
+    string locationAddress = 2 [(validate.rules).string.max_len = 255];
+    //经度
+    double longitude = 3 [(validate.rules).double.gte = 0];
+    //维度
+    double latitude = 4 [(validate.rules).double.gte = 0];
+    //偏移距离/米
+    int32 offsetDistance = 5 [(validate.rules).int32.gt = 0];
+    //部门id
+    int64 orgId = 6;
+    //地址名称
+    string addressName = 7 [(validate.rules).string.max_len = 100];
+}
+
+//调整工时入参
+message AdjustRequest {
+    //打卡记录id
+    int64 attendanceId = 1 [(validate.rules).int64.gt = 0];
+    //实际工时
+    double actualWorkingHours = 2 [(validate.rules).double.gt = 0];
+    //工时调整原因
+    optional string remark = 3 [(validate.rules).string.max_len = 255];
+}
+
+//确认工时
+message ConfirmRequest {
+    //打卡记录id
+    int64 attendanceId = 1 [(validate.rules).int64.gt = 0];
+}
+
+//打卡记录列表入参
+message AttendanceRecordListRequest {
+    //部门id
+    optional int64 orgId = 1 [(validate.rules).int64.gt = 0];
+    //员工id
+    optional int64 employeeId = 2 [(validate.rules).int64.gt = 0];
+    //开始时间
+    optional google.protobuf.Timestamp startTime = 3;
+    //结束时间
+    optional google.protobuf.Timestamp endTime = 4;
+}
+
+//打卡记录列表响应
+message AttendanceRecordListResponse {
+    //打卡日期
+    string attendanceDate = 1;
+    //员工id
+    int64 employeeId = 2;
+    //排班开始时间
+    google.protobuf.Timestamp scheduleStartTime = 3;
+    //排班结束时间
+    google.protobuf.Timestamp scheduleEndTime = 4;
+    //排班详情id
+    int64 workScheduleDetailId = 5;
+    //上班打卡时间
+    google.protobuf.Timestamp clockIn = 6;
+    //下班打卡时间
+    google.protobuf.Timestamp clockOut = 7;
+    //打卡工时
+    float attendanceWorkingHours = 8;
+    //实际工时
+    float actualClockWorkingHours = 9;
+    //工时计算单位
+    AttendanceCalculateUnit calculateUnit = 10;
+    //操作人
+    int64 operatorId = 11;
+    //操作时间
+    google.protobuf.Timestamp operateTime = 12;
+    //调整原因
+    string adjustRemark = 13;
+    //打卡记录id
+    int64 attendanceId = 14;
+}
+
+//打卡工时计算单位
+enum AttendanceCalculateUnit {
+    //分钟
+    PC_MINUTES_UNIT = 0;
+    //半小时
+    PC_HALF_HOUR_UNIT = 1;
+    //小时
+    PC_HOURS_UNIT = 2;
+}
+message BasePunchInfo {
+    //打卡地址
+    string punchAddress = 2 [(validate.rules).string.min_len = 1];
+    //打卡时间
+    google.protobuf.Timestamp clock = 3;
+    //经度
+    double longitude = 4 [(validate.rules).double.gte = 0];
+    //维度
+    double latitude = 5 [(validate.rules).double.gte = 0];
+}
+
+//开工入参
+message PunchInBeRequest {
+    //企业员工id
+    int64 empId = 2 [(validate.rules).int64.gt = 0];
+    //打卡基础信息
+    BasePunchInfo basePunchInfo = 1;
+    //创建人
+    int64 createBy = 9 [(validate.rules).int64.gt = 0];
+}
+
+//完工出参
+message PunchOutBeRequest {
+    //考勤记录id
+    int64 recordId = 1 [(validate.rules).int64.gt = 0];
+    //打卡基础信息
+    BasePunchInfo basePunchInfo = 2;
+    //更新人
+    int64 updateBy = 9 [(validate.rules).int64.gt = 0];
+}
+
+
+//修改考勤记录入参
+message UpdateAttendanceRecordBeRequest {
+    //考勤记录id
+    fixed64 attendanceRecordId = 1;
+    //下班打卡地址
+    string punchOutAddress = 2;
+    //下班打卡时间
+    int64 clockOut = 3;
+    //打卡工时
+    double workHour = 4;
+    //实际工时
+    double actualHour = 5;
+    //调整工时备注
+    string adjustWorkHourRemark = 6;
+    //薪资
+    string salary = 7;
+    //状态
+    AttendanceRecordStatusEnum attendanceRecordStatusEnum = 8;
+    //考勤是否结束
+    bool attendanceFinishFlag = 9;
+    //更新人
+    int64 modifyBy = 10;
+}
+
+
+
+message RecordListBeResponse {
+    // 数据
+    repeated RecordDetailBeResponse data = 1;
+}
+
+//考勤打卡列表出参
+message RecordPageListBeResponse {
+    // 总记录数
+    int64 total = 1;
+    // 数据
+    repeated RecordDetailBeResponse data = 2;
+}
+
+//列表查询打卡记录查询条件入参
+message RecordQueryConditionBeRequest {
+    // 是否分页 默认分页
+    bool paged = 1;
+    // 当前页（从0开始）
+    int32 curPage = 2;
+    // 页面大小
+    int32 pageSize = 3;
+    //部门id
+    optional int64 orgId = 4;
+    //企业员工id
+    optional int64 empId = 5;
+    //状态
+    optional AttendanceRecordStatusEnum attendanceRecordStatusEnum = 6;
+    //上班日期开始 格式：yyyy-MM-dd
+    optional string clockInStart = 7;
+    //上班日期结束 格式：yyyy-MM-dd
+    optional string clockInEnd = 8;
+    //打卡记录id
+    optional int64 attendanceRecordId = 9;
+    repeated int64 attendanceRecordIds = 10;
+    //租户id
+    optional int64 tenantId = 11;
+    //打卡是否结束
+    optional bool attendanceFinishFlag = 12;
+    //员工id集合
+    repeated int64 empIds = 13;
+    //打卡时间 格式：yyyy-MM-dd
+    optional string punchDate = 14;
+
+}
+
+message AttendanceRecordIdBeRequest {
+    //考勤记录id
+    int64 attendanceRecordId = 1 [(validate.rules).int64.gt = 0];
+}
+//打卡返回Response
+message PunchBeResponse{
+    //考勤记录id
+    int64 recordId = 1;
+}
+
+//考勤记录详细信息出参
+message RecordDetailBeResponse {
+    //考勤记录id
+    fixed64 attendanceRecordId = 1;
+    //租户id
+    int64 tenantId = 2;
+    //企业员工id
+    int64 empId = 3;
+    //部门id
+    int64 orgId = 4;
+    //排班详情id
+    int64 workScheduleDetailId = 5;
+    //上班考勤打卡地址配置id
+    int64 punchInAttendanceConfigAddressId = 6;
+    //下班考勤打卡地址配置id
+    int64 punchOutAttendanceConfigAddressId = 7;
+    //上班打卡地址
+    string punchInAddress = 8;
+    //下班打卡地址
+    string punchOutAddress = 9;
+    //上班打卡时间
+    google.protobuf.Timestamp clockIn = 10;
+    //下班打卡时间
+    optional google.protobuf.Timestamp clockOut = 11;
+    //打卡工时
+    double workHour = 12;
+    //实际工时
+    double actualHour = 13;
+    //调整工时备注
+    string adjustWorkHourRemark = 14;
+    //薪资
+    string salary = 15;
+    //状态
+    AttendanceRecordStatusEnum attendanceRecordStatusEnum = 16;
+    //考勤是否结束
+    bool attendanceFinishFlag = 17;
+    //创建时间
+    google.protobuf.Timestamp createdAt = 18;
+    //更新时间
+    google.protobuf.Timestamp updatedAt = 19;
+    //工时计算单位
+    AttendanceCalculateUnit attendanceCalculateUnit = 20;
+    //创建人
+    int64 createBy = 21;
+    //更新人
+    int64 modifyBy = 22;
+    //排班时间开始
+    google.protobuf.Timestamp scheduleTimeStart = 23;
+    //排班时间结束
+    google.protobuf.Timestamp scheduleTimeEnd = 24;
+    //是否调整过工时 （0否，1是）
+    bool adjustWorkHourFlag = 26;
+
+}
+
+
+//打卡状态
+enum AttendanceRecordStatusEnum {
+    //上班打卡
+    START_WORK = 0;
+    //打卡待确认（打卡未审核状态）
+    WAIT_CONFIRMED = 1;
+    //打卡已确认（发薪待审核）
+    REVIEWED = 2;
+}
+

@@ -1,0 +1,751 @@
+syntax = "proto3";
+package xbbcloud;
+option java_package = "cn.xunhou.grpc.proto.xbbcloud";
+option java_outer_classname = "SalaryServerProto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+service SalaryServer{
+  rpc queryMerchantInfoList(MerchantInfoListRequest) returns (MerchantInfoListResponse){}
+  //批量查询商户信息
+  rpc queryMerchantPage(MerchantInfoPageRequest) returns (MerchantInfoPageResponse){}
+  //查询商户信息
+  rpc queryMerchantInfo(MerchantInfoRequest) returns(MerchantInfoResponse){}
+  //新增｜修改商户信息（变更信息时需校验使用场景）
+  rpc saveMerchantInfo(SaveMerchantInfoRequest) returns(MerchantInfoResponse){}
+  //商户流水操作
+  rpc operateMerchantFlow(OperateMerchantFlowRequest) returns(MerchantFlowsResponse){}
+  //商户交易流水查询（操作金额的相关逻辑
+  rpc findMerchantFlow(MerchantFlowPageRequest) returns (MerchantFlowsPageResponse){}
+  //查询商户余额
+  rpc findMerchantBalance(MerchantInfoRequest) returns (MerchantInfoResponse){}
+  //认证后更新该用户的所有发薪明细状态
+  rpc certifyUpdateSalaryDetail(CertificationRequest) returns (google.protobuf.Empty){}
+  //查询项目下拉列表
+  rpc querySalaryProduct(google.protobuf.Empty) returns (SalaryProductListResponse){}
+  //根据身份证号批量查询userXhC用户信息
+  rpc queryUserXhCByIdCards(QueryByIdCardsRequest) returns (UserXhCListResponse){}
+  //保存发薪批次
+  rpc saveSalaryBatch(SalaryBatchRequest) returns (saveSalaryBatchResponse){}
+  //分页查询发薪批次列表
+  rpc findSalaryBatchPageList (SalaryBatchConditionBeRequest) returns (SalaryBatchPageBeResponse) {}
+  //分页查询发薪明细列表
+  rpc findSalaryDetailPageList(SalaryDetailConditionBeRequest) returns (SalaryDetailPageBeResponse){}
+  //租户子账户金额查询 - v2.1
+  rpc findTenantAccount(TenantAccountPageRequest) returns (TenantAccountPageResponse){}
+  // 资金撤回
+  rpc fundBack(FundBackRequest) returns (FundBackResponse){}
+  //批次id
+  rpc breakpointRetry(BreakpointRetryRequest) returns (BreakpointRetryResponse){}
+
+}
+
+enum EnumCustomerSubAccountType{
+  //正常
+  SA_NORMAL = 0;
+  //劳务发薪
+  SA_LABOR_PAYROLL = 1;
+  //运营专用
+  SA_OPERATION_DEDICATED = 2;
+  //结算发薪专用
+  SA_SETTLE_PAY_DEDICATED = 3;
+  //推荐官支付专用
+  SA_WALLET_PAY_DEDICATED = 4;
+  //调度账户使用
+  SA_DISPATCH = 5;
+}
+
+enum EnumSalaryDetailStatus{
+  //支付处理中 (未认证 无openId 多openId)
+  PAYING_NOT_AUTH = 0;
+  //支付处理中 (已经调用发薪接口)
+  PAYING_ALREADY_HANDLE = 1;
+  // 已发薪
+  ALREADY_PAID = 2;
+  // 支付失败
+  PAY_FAIL = 3;
+  // 待提现
+  WAIT_WITHDRAW = 4;
+  // 提现中
+  WITHDRAWING = 5;
+  //撤回中
+  CANCELING = 6;
+  //已撤回
+  CANCELLED = 7;
+  //撤回失败
+  CANCEL_FAILED = 8;
+  //提现失败
+  WITHDRAW_FAILED = 9;
+  //提现成功
+  WITHDRAW_SUCCESS = 10;
+
+}
+enum EnumTenantType{
+  SAAS = 0;
+  //代发类型
+  BEHALF_ISSUED = 1;
+}
+enum EnumFlowOperationType{
+  //未知类型
+  EO_NONE = 0;
+  //收入
+  INCOME = 1 ;
+  //支出
+  EXPENDITURE = 2;
+}
+enum EnumTradingStatus{
+  //待发薪
+  TO_BE_PAID = 0;
+  //进行中
+  IN_PROGRESS = 1;
+  //全部成功
+  ALL_SUCCEEDED = 2;
+  //部分成功
+  PARTIALLY_SUCCESSFUL = 3;
+  //全部失败
+  ALL_FAILED = 4;
+}
+enum EnumCertificationType{
+  //未知类型
+  CT_NONE = 0;
+  //二要素认证
+  TWO_FACTOR_CERTIFICATION = 1;
+  //信息+人脸认证
+  INFORMATION_FACE_AUTHENTICATION = 2;
+}
+enum EnumPayrollMethod {
+  //未知类型
+  PM_NONE = 0;
+  //无卡发薪
+  WITHOUT_CARD = 1;
+  //有卡发薪
+  PAY_WITH_CARD = 2;
+}
+message SalaryDetailRequest{
+  //员工姓名
+  string name = 1;
+  //身份证号
+  string idCardNo = 2;
+  //手机号
+  string phone = 3;
+  //应发金额（分）
+  int32 payableAmount = 4;
+  //实发金额（分）
+  int32 paidInAmount = 5;
+  //个税（分）
+  int32  taxAmount = 6;
+  /**
+   * 其他扣除（分）
+   */
+  int32 otherDeduct = 7;
+  //操作人id
+  int64 operatorId = 8;
+
+}
+
+message SalaryDetailBeResponse{
+
+  //项目名称
+  string productName = 4;
+  //员工姓名
+  string staffName = 5;
+
+  //发薪日期
+  string createTime = 6;
+
+
+  //应发金额（分）
+  string payableAmount = 7;
+
+
+  //实发金额（分）
+  string paidInAmount = 8;
+
+
+  //个税（分）
+  string  taxAmount = 9;
+
+  /**
+   * 其他扣除（分）
+   */
+  string otherDeduct = 10;
+
+  //身份证号
+  string idCardNo = 11;
+
+  //明细状态  状态 0支付处理中（未认证） 1支付处理中（已下单） 2已发薪 3支付失败
+  int32 detailStatus = 12;
+
+  //批次编号
+  int64 batchId = 13;
+  //备注
+  string remark = 14;
+  //操作人id
+  int64 operatorId = 15;
+  //失败原因
+  string  failureReason = 16;
+
+  //明细编号
+  int64 detailId = 17;
+  //发薪主体id
+  int64 subjectId = 18;
+
+  //服务费(分)
+  string serviceAmount = 19;
+  int64 tenantId = 20;
+
+  //更新日期
+  string updateTime = 21;
+  //手机号
+  string phone = 22;
+  //计薪年月
+  string month = 23;
+  //业务流水号
+  string assetDetailNo = 24;
+  //重试次数
+  int32 retryCount = 25;
+  //扩展字段
+  string expandJson = 26;
+}
+
+message SalaryBatchBeResponse{
+  int64  batchId = 1;
+  string createdAt = 2;
+  string productName = 3;
+  int32 peopleCount = 4;
+  string payableAmount = 5;
+  int32 status = 6;
+  int64 operatorId = 7;
+  string month = 8;
+  //服务费
+  string serviceAmount = 9;
+  int64 tenantId = 10;
+  int64 subjectId = 11;
+  int32 payMethod = 12;
+
+  //扣费状态
+  int32 deductionStatus = 13;
+  //扣费失败原因
+  string deductionFailureReason = 14;
+
+  string expandJson = 15;
+}
+message SalaryDetailConditionBeRequest{
+
+  // 当前页（从0开始）
+  int32 curPage = 1;
+  // 页面大小
+  int32 pageSize = 2;
+
+  //项目名称
+  optional string productName = 4;
+  //员工姓名
+  optional string staffName = 5;
+
+  //发薪日期 开始 对应创建时间
+  optional string startSubmitTime = 6;
+  //发薪日期 截至 对应创建时间
+  optional string endSubmitTime = 7;
+  //身份证号
+  optional string idCardNo = 8;
+
+  //明细状态  EnumSalaryDetailStatus
+  repeated int32 detailStatus = 9;
+  //批次编号
+  optional int64 batchId = 10;
+
+  //手机号
+  optional string phone = 11;
+
+  //租户id
+  optional int64 tenantId = 12;
+  //明细主键id
+  optional int64 id = 13;
+  //租户ids
+  repeated int64 tenantIds = 14;
+  // 查询更新时间开始
+  optional string updateTimeStart = 15;
+  // 查询更新时间截至
+  optional string updateTimeEnd = 16;
+  //身份证List
+  repeated string idCardNos = 17;
+  //notIn状态的list
+  repeated int32 notInDetailStatus = 18;
+
+  repeated int64 batchIds = 19;
+  repeated int64  ids = 20;
+  //是否是运营平台 true是 false否
+  optional bool isOperation = 21;
+}
+message SalaryDetailPageBeResponse{
+  // 总记录数
+  int32 total = 1;
+  // 数据
+  repeated SalaryDetailBeResponse data = 2;
+}
+message UserXhCListResponse{
+
+  // 数据
+  repeated UserXhCResponse data = 1;
+}
+
+
+message UserXhCResponse{
+  //证件号
+  string idCardNo = 1;
+  //实名
+  string realName = 2;
+}
+message SalaryBatchConditionBeRequest{
+
+  // 当前页（从0开始）
+  optional int32 curPage = 1;
+  // 页面大小
+  optional int32 pageSize = 2;
+
+  optional int32 status = 3;
+  //发薪日期 开始 对应创建时间
+  optional string startSubmitTime = 4;
+  //发薪日期 截至 对应创建时间
+  optional string endSubmitTime = 5;
+
+  optional int64 batchId = 6;
+
+  optional string productName = 7;
+  //支付方式 1小程序体现 2微信到账
+  optional int32 payMethod = 8;
+
+  repeated int32  statusList = 9;
+
+  optional int64  subjectId = 10;
+  //租户id
+  optional int64 tenantId = 11;
+  //扣费状态
+  repeated int32  deductionStatus = 12;
+
+  repeated int64  batchIds = 13;
+  //是否是运营平台 true是 false否
+  optional bool isOperation = 14;
+
+}
+message SalaryBatchPageBeResponse{
+  // 总记录数
+  int32 total = 1;
+  // 数据
+  repeated SalaryBatchBeResponse data = 2;
+}
+message saveSalaryBatchResponse{
+  // 批次号
+  int64 batchId = 1;
+}
+message SalaryProductListResponse{
+  // 数据
+  repeated SalaryProductResponse data = 1;
+}
+
+message QueryByIdCardsRequest{
+  // 数据
+  repeated string idCards = 1;
+}
+message SalaryBatchRequest{
+  //项目名称
+  string  productName = 1;
+  //计薪年月 yyyymm
+  string month = 2;
+  //发薪导入文件名称
+  string salaryFile = 3;
+  //明细列表
+  repeated SalaryDetailRequest data = 4;
+
+
+}
+
+message SalaryProductResponse{
+  //主键id
+  int64 id = 1;
+  //项目名称
+  string name = 2;
+}
+
+message FitCertificationRequest{
+
+}
+message FitCertificationResponse{
+
+}
+message CertificationRequest{
+  string idCardNo = 1;
+  int64 batchId = 2;
+  int64 userXhCId = 3;
+  string openId = 4;
+}
+message CertificationResponse{
+
+}
+
+message MerchantInfoRequest{
+  //租户id
+  int64 tenantId = 1;
+}
+message MerchantInfoResponse{
+  //租户id
+  optional int64 tenantId = 1;
+  //更新时间
+  string updateTime = 2;
+  //到期时间
+  string useToDate = 3;
+  //租户类型
+  EnumTenantType tenantType = 4;
+  //商户号
+  string payeeMerchantNo = 5;
+  //商户号收款主体
+  string payeeMerchantName = 6;
+  //商户合同文件id
+  string contractFileId = 7;
+  //服务费率
+  float serviceRate = 8;
+  //是否审批
+  bool isApproval = 9;
+  //个税能力
+  bool individualTax = 10;
+  //发薪方式 1无卡发薪、2有卡发薪
+  repeated EnumPayrollMethod payrollMethods = 11;
+  //认证类型 1二要素认证、2信息+人脸认证
+  EnumCertificationType certificationType = 12;
+  //备注
+  optional string remarks = 13;
+  //查询时间
+  optional string queryTime = 14;
+  //余额 分
+  optional string balance = 15;
+  //特约商户id
+  optional string specialMerchantId = 16;
+  //发薪主体
+  optional int64 payerSubjectId = 17;
+  //开户银行名
+  string openBankName = 18;
+  //开户行号
+  string openBankNo = 19;
+  //开户地
+  string openBankAddress = 20;
+  //小程序提现 （1：是 2：否）
+  bool xcxWithdraw = 21;
+  //合同id
+  optional string contractId = 22;
+  //项目id
+  optional string projectId = 23;
+  //收款子账户id
+  optional int64 payeeSubAccountId = 24;
+  //收款主体
+  optional int64 payeeSubjectId = 25;
+  //收款子账户编号
+  optional string payeeSubAccountNo = 26;
+  //代发-收款主体客户id
+  optional int64 payeeCustomerId = 27;
+  //代发-商务合同客户id
+  optional int64 businessContractCustomerId = 28;
+
+  //当前租户使用的客户 payeeCustomerId + businessContractCustomerId
+  repeated int64 useCustomerIds = 29;
+}
+message SaveMerchantInfoRequest{
+  //租户id
+  int64 tenantId = 1;
+  //到期时间 yyyy-MM-dd hh:mm:ss
+  string useToDate = 2;
+  //租户类型
+  EnumTenantType tenantType = 3;
+  //商户号
+  string payeeMerchantNo = 4;
+  //商户号收款主体
+  string payeeMerchantName = 5;
+  //商户合同文件id
+  optional string contractFileId = 6;
+  //服务费率
+  float serviceRate = 7;
+  //是否审批
+  bool isApproval = 8;
+  //个税能力
+  bool individualTax = 9;
+  //发薪方式 1无卡发薪、2有卡发薪
+  repeated EnumPayrollMethod payrollMethods = 10;
+  //认证类型 1二要素认证、2信息+人脸认证
+  EnumCertificationType certificationType = 11;
+  //备注
+  optional string remarks = 12;
+  //操作人id
+  int64 operatorId = 13[(validate.rules).int64.gt = 0];
+  //服务商编号
+  optional string serviceMerchantNo = 14;
+  //特约商户id
+  string specialMerchantId = 15;
+  //发薪主体
+  optional int64 payerSubjectId = 16;
+  //开户银行名
+  string openBankName = 17;
+  //开户行号
+  string openBankNo = 18;
+  //开户地
+  string openBankAddress = 19;
+  //小程序提现
+  bool xcxWithdraw = 20;
+  //合同id
+  optional string contractId = 21;
+  //项目id
+  optional string projectId = 22;
+  //收款子账户id
+  optional int64 payeeSubAccountId = 23;
+  //收款主体id
+  optional int64 payeeSubjectId = 24;
+  //收款子账户编号
+  optional string payeeSubAccountNo = 25;
+  //代发-收款主体客户id
+  optional int64 payeeCustomerId = 26;
+  //代发-商务合同客户id
+  optional int64 businessContractCustomerId = 27;
+}
+message OperateMerchantFlowRequest{
+  //租户id
+  int64 tenantId = 1;
+  //流水操作类型
+  EnumFlowOperationType flowOperationType = 2;
+  //操作金额(分)
+  string operationAmount = 3;
+  //备注
+  string remarks = 5;
+  //操作人id
+  int64 operatorId = 6[(validate.rules).int64.gt = 0];
+  //流水编号
+  string flowNo = 7;
+  //交易批次
+  optional int64 salaryBatchId = 8;
+}
+
+message MerchantFlowPageRequest{
+  //页码
+  int32 page = 1;
+  //每页大小
+  int32 size = 2[(validate.rules).int32.gt = 0];
+  //租户id
+  optional int64 tenantId = 3;
+  //流水操作类型
+  repeated EnumFlowOperationType flowOperationTypes = 4;
+  //开始时间 yyyy-MM-dd HH:mm:ss
+  optional string startTime = 5;
+  //结束时间 yyyy-MM-dd HH:mm:ss
+  optional string endTime = 6;
+  //备注
+  optional string remarks = 7;
+  //交易状态
+  repeated EnumTradingStatus tradingStatus = 8;
+  //操作人id
+  optional int64 operatorId = 9[(validate.rules).int64.gt = 0];
+  //操作金额(分)
+  optional string operationAmount = 10;
+  //多租户ids - v2.1
+  repeated int64 tenantIds = 11;
+  //租户类型 - v2.1
+  repeated EnumTenantType tenantTypes = 12;
+  //银行卡号 - v2.1
+  repeated string bankCardNos = 13;
+}
+
+message MerchantFlowsPageResponse{
+  repeated MerchantFlowsResponse data = 1;
+  //总数
+  int32 total = 2;
+  //页码
+  int32 page = 3;
+  //每页大小
+  int32 size = 4[(validate.rules).int32.gt = 0];
+}
+message MerchantFlowsResponse{
+  //流水id
+  int64 id = 1;
+  //租户id
+  int64 tenantId = 2;
+  //流水操作类型
+  EnumFlowOperationType flowOperationType = 3;
+  //操作金额(分)
+  string operationAmount = 4;
+  //交易状态
+  EnumTradingStatus tradingStatus = 5;
+  //备注
+  string remarks = 6;
+  //操作人id
+  int64 operatorId = 7;
+  //流水编号
+  string flowNo = 8;
+  //交易批次
+  optional int64 salaryBatchId = 9;
+  //操作时间 yyyy-MM-dd hh:mm:ss
+  string updatedAt = 10;
+}
+message MerchantInfoListRequest{
+  //小于等于有效期
+  optional string leUseToDate = 1;
+  //租户ids
+  repeated int64 tenantIds = 2;
+  //租户类型
+  repeated EnumTenantType tenantTypes = 3;
+  //收款子账户id
+  repeated int64 payeeSubAccountIds = 4;
+}
+
+message MerchantInfoListResponse{
+  repeated MerchantInfoResponse merchantInfoList = 1;
+}
+
+message MerchantInfoPageRequest{
+  //页码
+  int32 page = 1;
+  //每页大小
+  int32 size = 2[(validate.rules).int32.gt = 0];
+  //租户ids
+  repeated int64 tenantIds = 3;
+  //租户类型
+  repeated EnumTenantType tenantTypes = 4;
+}
+
+message MerchantInfoPageResponse{
+  //总数
+  int32 total = 1;
+  //页码
+  int32 page = 2;
+  //每页大小
+  int32 size = 3[(validate.rules).int32.gt = 0];
+  //基本信息
+  repeated MerchantInfoResponse merchantInfoList = 4;
+}
+
+//账户金额信息请求 - v2.1
+message TenantAccountPageRequest {
+  //页码
+  int32 page = 1;
+  //每页大小
+  int32 size = 2[(validate.rules).int32.gt = 0];
+  //账户主体ids
+  repeated int64 subjectIds = 3;
+  //发薪子账户id
+  repeated int64 subAccountIds = 4;
+  //租户ids
+  repeated int64 tenantIds = 5;
+  //客户类型
+  repeated EnumCustomerSubAccountType customerSubAccountTypes = 6;
+}
+
+//账户金额信息响应 - v2.1
+message TenantAccountPageResponse{
+  //总数
+  int32 total = 1;
+  //页码
+  int32 page = 2;
+  //每页大小
+  int32 size = 3[(validate.rules).int32.gt = 0];
+  //基本信息
+  repeated TenantAccountResponse data = 4;
+}
+
+
+
+//租户管理查询响应
+message TenantBeResponse{
+  //主键,租户
+  fixed32 tenantId = 1;
+  //租户名称
+  string tenantName = 2;
+  //租户编号
+  string tenantNumber = 3;
+  //公司别名
+  string alias = 4;
+  //租户来源：0#未知，1#薪酬云,2#推荐官，3#渠道商
+  int32 tenantSource = 5;
+  //执行状态：0#未知，1#客诉中，2#运作中，3#已解约
+  int32 runState = 6;
+  //其他状态-归档状态：0#未知，1#完成，2#未完成
+  int32 otherState = 7;
+  //公司logo
+  string logo = 8;
+  //产品ID
+  fixed32 productId = 9;
+  //公司域名
+  string domain = 10;
+  //公司描述
+  string description = 11;
+  //有效时间－起始
+  fixed64 validTimeStart = 12;
+  //有效时间－截止
+  fixed64 validTimeEnd = 13;
+  //创建人id
+  fixed64 creatorBy = 14;
+  //修改人id
+  fixed64 modifiedBy = 15;
+  //0：启用，1：禁用
+  int32 status = 16;
+  //创建时间
+  fixed64 createdAt = 17;
+  //更新时间
+  fixed64 updatedAt = 18;
+  //逻辑删除标识
+  fixed32 deletedFlag = 19;
+  string remark = 20;
+  int64 adminId = 21;
+  string adminName = 22;
+  string adminTel = 23;
+  string contact = 24;
+  string contactTel = 25;
+  string contactIdCard = 26;
+  string industry = 27;
+  string address = 28;
+  string region = 29;
+  string creator = 30;
+  //合作资料(json存储)
+  string cooperativeInformationJson = 31;
+  //attachment
+  string attachmentJson = 32;
+  // adminId对应的usexh表id
+  int64 adminUserXhId = 33;
+  //公司名称
+  string company = 34;
+  //修改人
+  string modified = 35;
+}
+
+
+//账户金额信息 - v2.1
+message TenantAccountResponse{
+  //主体id
+  optional int64 subjectId = 1;
+  //主体名称
+  optional string subjectName = 2;
+  //银行卡号
+  optional string bankCardNo = 3;
+  //租户id - web 查询租户名称
+  repeated TenantBeResponse tenantInfo = 4;
+  //子账户余额 - web 查询
+  optional string balance = 5;
+  //结算中金额 (冻结金额，指已发薪待用户提现或正在提现途中金额，结算中金额+余额为当前账户上应有金额) (分)
+  optional string settlementAmount = 6;
+  //子账户id
+  int64 subAccountId = 7;
+  //客户id
+  optional int64 customerId = 8;
+}
+
+message FundBackRequest {
+  //详情ids
+  repeated int64 detailIds = 1;
+}
+
+message FundBackResponse{
+
+}
+
+message BreakpointRetryRequest{
+  //批次id
+  int64 batchId = 1;
+}
+message BreakpointRetryResponse{
+
+}

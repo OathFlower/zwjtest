@@ -1,0 +1,345 @@
+syntax = "proto3";
+
+package xbbcloud;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+option java_package = "cn.xunhou.grpc.proto.xbbcloud";
+option java_outer_classname = "ScheduleServerProto";
+
+//排班管理服务
+service ScheduleServer {
+
+  //查询排班设置
+  rpc querySetting (QueryScheduleSettingsRequest) returns (ScheduleSetting) {}
+
+  //保存排班设置
+  rpc saveSetting (ScheduleSetting) returns (ScheduleSettingResponse) {}
+
+  //查看排班
+  rpc querySchedule (ScheduleRequest) returns (ScheduleResponse) {};
+
+  //发布
+  rpc publish (ScheduleId) returns (google.protobuf.Empty);
+
+  //复制前一周排班
+  rpc copyPreviousSchedule (CopyPreviousScheduleRequest) returns (ScheduleId);
+
+  //解锁排班
+  rpc unlock (ScheduleId) returns (google.protobuf.Empty);
+
+  //循环排班
+  rpc loop (LoopScheduleRequest) returns (google.protobuf.Empty);
+
+  //保存排班
+  rpc saveSchedule (ScheduleSaveRequest) returns (ScheduleSaveResponse);
+
+  //保存字典
+  rpc saveDictionary (DictionarySaveRequest) returns (DictionarySaveResponse);
+
+  //字典列表
+  rpc findDictionaryList (DictionaryListRequest) returns (DictionaryListResponse);
+
+  //查找指定字典
+  rpc findDict(DictionaryRequest) returns (DictionaryResponse);
+
+  //排班详情列表
+  rpc findScheduleDetailList(ScheduleDetailListQueryRequest) returns (ScheduleDetailListResponse);
+
+  //是否有最新排班
+  rpc hasLatestSchedule(LatestScheduleQueryRequest) returns (LatestScheduleResponse);
+
+  //锁定排班
+  rpc lock(ScheduleId) returns (google.protobuf.Empty);
+
+}
+
+//查询指定字典入参
+message DictionaryRequest{
+  //字典id
+  int64 dictId = 1 [(validate.rules).int64.gt = 0];
+}
+
+//查询是否有最新排班入参
+message LatestScheduleQueryRequest{
+  //员工id
+  int64 employeeId = 1 [(validate.rules).int64.gt = 0];
+  //租户id 可选
+  optional int32 tenantId = 2;
+}
+//最新排班结果
+message LatestScheduleResponse{
+  //是否有最新排班
+  bool hasLatestScheduled = 1;
+}
+
+//排班详情查询入参
+message ScheduleDetailListQueryRequest{
+  //员工id
+  int64 employeeId = 1 [(validate.rules).int64.gt = 0] ;
+  //租户id
+  int32 tenantId = 2 [(validate.rules).int32.gt = 0];
+  //开始日期时间戳 毫秒
+  int64 startTime = 3 [(validate.rules).int64.gt = 0];
+  //结束日期时间戳 毫秒
+  int64 endTime = 4 [(validate.rules).int64.gt = 0];
+  //是否需要记录已读状态
+  bool generateRecord = 5;
+}
+
+//排班详情列表结果
+message ScheduleDetailListResponse{
+  //结果列表
+  repeated ScheduleDetailResponse scheduleDetailList = 1;
+}
+
+//排班详情
+message ScheduleDetailResponse{
+  //当日日期零点时间戳
+  int64 date = 1;
+  //当日是否有排班
+  bool hasScheduled = 2;
+  //排班id
+  int64 scheduleId = 3;
+  //排班详情id
+  int64 scheduleDetailId = 4;
+  //排班开始时间戳 毫秒
+  int64 startDateTime = 5;
+  //排班结束时间戳 毫秒
+  int64 endDateTime = 6;
+  //员工id
+  int64 employeeId = 7;
+  //租户id
+  int32 tenantId = 8;
+}
+
+
+//查询配置
+message QueryScheduleSettingsRequest {
+  //租户id
+  optional int32 tenantId = 1;
+}
+
+//字典列表入参
+message DictionaryListRequest {
+  DictionaryTypeEnum dictionaryType = 1;
+
+  optional int32 tenantId = 2;
+}
+
+//字典列表响应
+message DictionaryListResponse {
+  repeated DictionaryResponse dictionaryList = 1;
+}
+
+//字典信息
+message DictionaryResponse {
+  //主键id
+  int64 id = 1;
+  //字典code
+  int32 code = 2;
+  //字典名称
+  string name = 3;
+  //字典描述
+  string description = 4;
+  //排序
+  int32 sort = 5;
+  //类型
+  int32 type = 6;
+  //创建人
+  int64 createBy = 7;
+  //更新人
+  int64 modifyBy = 8;
+  //父级code
+  int32 parentCode = 9;
+  //租户id
+  int32 tenantId = 10;
+  //是否可以编辑(系统默认的字典不可编辑,租户自定义的可以编辑)
+  bool editable = 11;
+}
+
+//字典保存入参
+message DictionarySaveRequest {
+  //字典id,不传为新增,传为编辑
+  optional int64 id = 1;
+  //字典类型,新增时传
+  DictionaryTypeEnum dictionaryType = 2;
+  //字典值
+  string dictionaryName = 3 [(validate.rules).string.max_len = 255];
+  //描述
+  optional string dictionaryDesc = 4 [(validate.rules).string.max_len = 1000];
+}
+
+enum DictionaryTypeEnum {
+  //未知
+  DIC_UNKNOWN = 0;
+  //员工类型
+  DIC_EMPLOYEE_TYPE = 1;
+  //员工来源类型
+  DIC_EMPLOYEE_SOURCE_TYPE = 2;
+}
+
+message DictionarySaveResponse {
+  //主键id
+  int64 id = 1;
+}
+
+
+message ScheduleSettingResponse {
+  int64 commonSettingId = 1;
+}
+
+message ScheduleSaveResponse {
+  //排班id
+  int64 scheduleId = 1;
+}
+
+//保存排班
+message ScheduleSaveRequest {
+  //部门id
+  int64 orgId = 1 [(validate.rules).int64.gt = 0];
+  //排班周期开始时间
+  google.protobuf.Timestamp scheduleStartTime = 2 [(validate.rules).timestamp.required = true];
+  //排班周期结束时间
+  google.protobuf.Timestamp scheduleEndTime = 3 [(validate.rules).timestamp.required = true];
+  //排班列表
+  repeated SingleDaySchedule scheduleList = 4;
+  //排班id 编辑时有值,新增时无此值
+  optional int64 workScheduleId = 5 [(validate.rules).int64.gt = 0];
+}
+
+//循环排班入参
+message LoopScheduleRequest {
+  //排班id
+  int64 workScheduleId = 1 [(validate.rules).int64.gt = 0];
+  //部门id
+  int64 orgId = 2 [(validate.rules).int64.gt = 0];
+  //指定员工
+  repeated int64 employeeIds = 3;
+  //是否覆盖已有排班
+  bool coverWhenExist = 4;
+}
+
+//复制前一周排班入参
+message CopyPreviousScheduleRequest {
+  //前一周排班id
+  int64 preWorkScheduleId = 1 [(validate.rules).int64.gt = 0];
+  //当前周排班id
+  optional int64 currentWorkScheduleId = 2;
+}
+
+//排班id
+message ScheduleId {
+  int64 workScheduleId = 1 [(validate.rules).int64.gt = 0];
+}
+
+//查看排班入参
+message ScheduleRequest {
+  //部门
+  int64 orgId = 1;
+  //指定员工
+  repeated int64 employeeIds = 2;
+  //排班周期开始时间
+  google.protobuf.Timestamp scheduleStartTime = 3;
+  //排班周期结束时间
+  google.protobuf.Timestamp scheduleEndTime = 4;
+  //排班id
+  optional int64 workScheduleId = 5 [(validate.rules).int64.gt = 0];
+}
+
+//排班结果
+message ScheduleResponse {
+  //排班id
+  int64 workScheduleId = 1;
+  //上一个周期的排班id
+  int64 preWorkScheduleId = 2;
+  //个人排班
+  repeated EmployeeSchedule employeeScheduleList = 3;
+  //排班总人数
+  int32 scheduledEmployeeCount = 4;
+  //排班总工时/秒
+  int64 allEmployeeWorkingSeconds = 5;
+  //排班发布状态 0发布 1未发布
+  int32 publishState = 6;
+  //排班锁定状态 0未锁定 1锁定
+  int32 lockState = 7;
+  //前一周期是否有有效排班
+  bool prePeriodHasValidSchedule = 8;
+  //当前周期是否有有效排班
+  bool currentPeriodHasValidSchedule = 9;
+  //排班开始时间戳
+  int64 scheduleStartTime = 10;
+  //排班结束时间戳
+  int64 scheduleEndTime = 11;
+
+}
+
+//个人排班信息
+message EmployeeSchedule {
+  //员工id
+  int64 employeeId = 1;
+  //休息天数
+  int32 restDays = 2;
+  //工作天数
+  int32 workingDays = 3;
+  //每天的排班信息
+  repeated SingleDaySchedule dayScheduleList = 4;
+  //周工时(以秒计)
+  int64 totalWorkingSeconds = 5;
+  //是否已读
+  bool hasRead = 6;
+
+}
+
+//每日的排班信息
+message SingleDaySchedule {
+  //排班详情id,编辑时传
+  optional int64 workScheduleDetailId = 1;
+  //排班开始时间
+  google.protobuf.Timestamp startAt = 2;
+  //排班结束时间
+  google.protobuf.Timestamp endAt = 3;
+  //周一-周七 1-7
+  int32 dayOfWeek = 4;
+  //员工id
+  int64 employeeId = 5;
+  //当前日期零点零分零秒时间戳
+  google.protobuf.Timestamp currentDate = 6;
+  //当日是否有排班
+  bool hasScheduled = 7;
+}
+
+//排班设置message
+message ScheduleSetting {
+  //周排班总工时 全职
+  float fullTimeTotalWeeklyHours = 1;
+  //日排班工时 全职
+  float fullTimeDailyHours = 2;
+  //每周休息天数
+  float weeklyRestDays = 3;
+  //连续上班天数
+  float continuousWorkingDays = 4;
+  //周排班总工时 兼职
+  float partTimeTotalWeeklyHours = 5;
+  //日排班总工时 兼职
+  float partTimeDailyHours = 6;
+  //周排班总工时 全职(开关)
+  bool fullTimeTotalWeeklyHoursOpenFlag = 7;
+  //日排班工时 全职(开关)
+  bool fullTimeDailyHoursOpenFlag = 8;
+  //每周休息天数(开关)
+  bool weeklyRestDaysOpenFlag = 9;
+  //连续上班天数(开关)
+  bool continuousWorkingDaysOpenFlag = 10;
+  //周排班总工时 兼职(开关)
+  bool partTimeTotalWeeklyHoursOpenFlag = 11;
+  //日排班总工时 兼职(开关)
+  bool partTimeDailyHoursOpenFlag = 12;
+  //通用设置id
+  optional int64 commonSettingId = 13 [(validate.rules).int64.gt = 0];
+  //创建人
+  int64 createBy = 14;
+}
+

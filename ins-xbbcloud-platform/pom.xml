@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>spring-cloud-xbb-parent</artifactId>
+        <groupId>cn.xunhou.cloud</groupId>
+        <version>1.0.6-SNAPSHOT</version>
+    </parent>
+
+    <groupId>cn.xunhou.grpc</groupId>
+    <artifactId>ins-xbbcloud-platform</artifactId>
+
+    <version>0.2.2-SNAPSHOT</version>
+    <name>ins-xbbcloud-platform</name>
+    <description>ins-xbbcloud-platform</description>
+    <properties>
+        <xbb-asset>0.0.6-SNAPSHOT</xbb-asset>
+        <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
+        <mapstruct.version>1.5.1.Final</mapstruct.version>
+        <spring-cloud-xbb.version>1.0.6-SNAPSHOT</spring-cloud-xbb.version>
+        <xbb-common-tool.version>1.0.4-SNAPSHOT</xbb-common-tool.version>
+        <spring-boot-grpc.version>2.13.0.RELEASE</spring-boot-grpc.version>
+        <hrm-proto.version>0.0.4-RELEASE-SNAPSHOT</hrm-proto.version>
+        <portal-proto.version>0.0.9-RELEASE-SNAPSHOT</portal-proto.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>portal-proto</artifactId>
+            <version>${portal-proto.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>asset-proto</artifactId>
+            <version>${xbb-asset}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>approve-proto</artifactId>
+            <version>0.0.4-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>xbbcloud-proto</artifactId>
+            <version>0.2.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.49.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty</artifactId>
+            <version>1.42.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.gavaghan</groupId>
+            <artifactId>geodesy</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.cloud</groupId>
+            <artifactId>spring-cloud-xbb-starter-sched</artifactId>
+            <version>1.0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>hrm-proto</artifactId>
+            <version>${hrm-proto.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>subject-proto</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.xunhou</groupId>
+            <artifactId>xbb-common-tool</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.devh</groupId>
+            <artifactId>grpc-client-spring-boot-starter</artifactId>
+            <version>${spring-boot-grpc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsr305</artifactId>
+                    <groupId>com.google.code.findbugs</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.protobuf</groupId>
+                    <artifactId>protobuf-java</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>byte-buddy</artifactId>
+                    <groupId>net.bytebuddy</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>2.0.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.xunhou.cloud</groupId>
+            <artifactId>spring-cloud-xbb-starter-dao</artifactId>
+            <version>${spring-cloud-xbb.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.xunhou.cloud</groupId>
+            <artifactId>spring-cloud-xbb-starter-rocketmq</artifactId>
+            <version>1.0.6-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.xunhou.cloud</groupId>
+            <artifactId>spring-cloud-xbb-starter-redis</artifactId>
+            <version>${spring-cloud-xbb.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.xunhou.cloud</groupId>
+            <artifactId>spring-cloud-xbb-starter-grpc</artifactId>
+            <version>${spring-cloud-xbb.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>mockito-core</artifactId>
+                    <groupId>org.mockito</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>23.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.cloud</groupId>
+            <artifactId>spring-cloud-xbb-core</artifactId>
+            <version>1.0.6-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>universal-proto</artifactId>
+            <version>0.0.4-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>crm-proto</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.grpc</groupId>
+            <artifactId>hrm-proto</artifactId>
+            <version>0.0.2-tyt-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou</groupId>
+            <artifactId>xbb-common-tool</artifactId>
+            <version>1.1.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.xunhou.cloud</groupId>
+            <artifactId>ins-xhresource-support</artifactId>
+            <version>0.0.3-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.12.RELEASE</version>
+                <configuration>
+                    <fork>true</fork>
+                    <jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>
+                    <mainClass>cn.xunhou.cloud.framework.XbbApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>releases-snapshots</id>
+            <url>http://nexus.tongdao.cn/nexus/content/repositories/releases-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

@@ -1,0 +1,649 @@
+syntax = "proto3";
+
+package xbbcloud;
+
+option java_package = "cn.xunhou.grpc.proto.approve";
+option java_outer_classname = "WorkflowServerProto";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+service WorkflowServer {
+  //查看工作流模板
+  rpc queryFlowTemplate(QueryFlowTemplateRequest) returns (QueryFlowTemplateResponse) {}
+  //开启工作流
+  rpc startFlowInstance(StartFlowInstanceRequest) returns (InstanceId) {}
+  //同意|拒绝|撤销
+  rpc process(FlowRequest) returns (google.protobuf.Empty) {}
+  //查看目前工作流表单信息实例
+  rpc queryFlowInstancePageList(FlowInstanceBeRequest) returns (FlowInstanceListBeResponse) {}
+  //查看列表状态个数
+  rpc queryStatusCount(FlowInstanceBeRequest) returns (StatusCountResponse) {}
+  //查看当前进程,流程历史记录
+  rpc queryProcess(QueryProcessRequest) returns (QueryProcessListBeResponse) {}
+  //查看所有需要审批的节点
+  rpc queryNode(QueryNodeRequest) returns (QueryNodeListBeResponse) {}
+  //查看表单模板
+  rpc queryFormTemplate(QueryFormTemplateRequest) returns (QueryFormTemplateResponse) {}
+
+}
+
+//签署类型
+enum EnumSignType {
+  //会签
+  SIGN_AND = 0;
+  //或签
+  SIGN_OR = 1;
+}
+
+//审批人类型
+enum EnumAssigneeType {
+  //个人
+  PERSONAL = 0;
+  //权限码
+  AUTH = 1;
+  //组织
+  GROUP = 2;
+  //表单内的联系人
+  FORM = 3;
+  //角色
+  ROLE = 4;
+}
+
+//节点类型
+enum EnumNodeType {
+  //审批人
+  APPROVER = 0;
+  //抄送人
+  CC = 1;
+  //办理人
+  TRANSACTOR = 2;
+  //条件分支
+  CONDITION = 3;
+}
+
+//节点通过类型
+enum EnumApproveType {
+  //人工
+  MANUAL = 0;
+  //自动通过
+  AUTO_APPROVE = 1;
+  //自动拒绝
+  AUTO_REJECT = 2;
+}
+
+//进程状态
+enum EnumRunStatus {
+  //运行中
+  RUNNING = 0;
+  //已经停止
+  STOP = 1;
+
+}
+//审核状态
+enum EnumStatus {
+  //0未发起
+  NOT_APPLY = 0;
+  //1审批中
+  TODO = 10;
+  //2审批通过
+  PASS = 20;
+  //3审批驳回
+  REJECT = 30;
+  //4撤销
+  REVOKED = 40;
+
+}
+
+//审核状态
+enum EnumEventStatus {
+  UNKNOWN = 0;
+  //初次提交
+  FIRST_COMMIT = 10;
+  //提交不审核
+  CONFIRM = 20;
+  //提交审核
+  COMMIT = 30;
+  //审批通过
+  AUDIT_PASS = 40;
+  //审批驳回
+  AUDIT_REFUSE = 50;
+  //撤销
+  REVOKE = 60;
+
+}
+
+//工作流转换请求
+message FlowRequest {
+
+  //工作流实例ID
+  int64 instanceId = 1[(validate.rules).int64.gt = 0];
+  //操作类型
+  EnumEventStatus enumEventStatus = 2;
+  //申请用户ID
+  int64 applicantId = 3;
+  //表单字段
+  FormField formFiled = 4;
+  //表单字段
+  optional string reason = 5;
+  //编辑目标ID
+  optional int64 editTargetId = 6;
+  //通知人
+  repeated int64 noticeTo = 7;
+  //通知方式
+  repeated int32 noticeFun = 8;
+  //通知电话
+  repeated string noticeTels = 9;
+  //工作流模板
+  int64 flowTemplateId = 10;
+  //租户ID
+  //    optional int32 tenantId = 11;
+  //审批人
+  int64 handler = 12;
+  //编辑表单旧Json
+  optional string formJson = 13;
+  //token
+  optional string token = 14;
+  //json
+  optional string newJsonData = 15;
+  //通知内容
+  optional string noticeContext = 16;
+
+  optional bool autoPass = 17;
+}
+
+message InstanceId{
+  int64 instanceId = 1;
+}
+//查询工作流模板请求
+message QueryFlowTemplateRequest {
+  //模板类型id
+  optional int64 flowTemplateId = 1 [(validate.rules).int64.gt = 0];
+}
+
+message StartFlowInstanceRequest{
+  //模板
+  optional FlowTemplateInfo flowTemplateInfo = 1;
+  //申请人
+  int64 applicantId = 2 [(validate.rules).int64.gt = 0];
+  //租户
+  optional int32 tenantId = 3;
+  //表单字段
+  FormField formField = 4;
+  //表单模板ID
+  int64 formTempId = 5;
+  //old表单Json
+  optional string formJson = 6;
+  //json
+  optional string newJsonData = 7;
+  //json
+  optional bool autoPass = 8;
+  //
+  optional int64 flowTemplateId = 9;
+  // 质保时间
+  optional string startTime = 10;
+}
+
+//保存工作流模板请求
+message FlowTemplateInfo {
+
+  //模板类型id
+  int64 flowTemplateId = 1;
+  //模板名字
+  string name = 2;
+  //模板描述
+  string describe = 3;
+  //节点
+  repeated NodeInfo nodInfo = 4;
+}
+
+//查询流程模板响应
+message QueryFlowTemplateResponse {
+
+  //模板类型id
+  int64 flowTemplateId = 1;
+  //模板名字(申请类型)
+  string templateName = 2;
+  //模板描述
+  string describe = 3;
+  //节点
+  repeated NodeInfo nodeInfos = 4;
+  //类型
+  int32 templateType = 5;
+}
+
+//模板节点详情
+message NodeInfo {
+
+  //节点名字
+  string name = 1;
+  //模板描述
+  string describe = 2;
+  //事件名
+  string event = 3;
+  //条件
+  string condition = 4;
+  //审核类型
+  int32 approveType = 5;
+  //审批人类型
+  int32 assigneeType = 6;
+  //节点类型
+  int32 nodeType = 7;
+  //签署类型
+  int32 signType = 8;
+  //监听器
+  string listener = 9;
+  //审批人ID
+  repeated int64 assigneeIds = 10;
+  //下一个节点
+  int32 nextNode = 11;
+  //节点level
+  int32 nodeLevel = 12;
+  //上一个节点
+  int32 preNode = 13;
+}
+
+//进程查询请求
+message QueryProcessRequest {
+
+  //流实例ID
+  int64 insId = 1;
+  //状态1运行中 2已结束
+  EnumRunStatus enumRunStatus = 2;
+}
+
+//进程分页响应
+message QueryProcessListBeResponse {
+  repeated QueryProcessResponse queryProcessResponse = 1;
+  // 总记录数
+  int64 total = 2;
+}
+
+//进程详情
+message QueryProcessResponse {
+
+  //当前进程ID
+  int64 id = 1;
+  //当前节点ID
+  int64 nodeId = 2;
+  //当前审批人ID
+  int64 assigneeId = 3;
+  //扭转时间
+  google.protobuf.Timestamp createAt = 4;
+  //状态1运行中 2已结束
+  EnumRunStatus enumRunStatus = 5;
+}
+
+//节点分页请求
+message QueryNodeRequest {
+
+  //流实例ID
+  int64 insId = 1;
+  //节点ID
+  repeated int64 nodeId = 2;
+
+}
+
+//节点分页响应
+message QueryNodeListBeResponse {
+  repeated QueryNodeResponse dataList = 1;
+  // 总记录数
+  int64 total = 2;
+}
+
+//节点详情
+message QueryNodeResponse {
+
+  //当前进程ID
+  string id = 1;
+  //当前节点ID
+  int64 nodeId = 2;
+  //审批人ID
+  int64 assigneeId = 3;
+  //审核时间
+  google.protobuf.Timestamp auditTime = 4;
+  //原因
+  string reason = 5;
+  //审核类型
+  EnumApproveType enumApproveType = 6;
+  //审批人类型
+  EnumAssigneeType enumAssigneeType = 7;
+  //节点类型
+  EnumNodeType enumNodeType = 8;
+  //签署类型
+  EnumSignType enumSignType = 9;
+  //上一个节点
+  int32 preNode = 10;
+  //下一个节点
+  int32 nextNode = 11;
+}
+
+//查询实例分页信息响应
+message FlowInstanceListBeResponse {
+  // 总记录数
+  int64 total = 1;
+  // 数据
+  repeated FlowInstanceDetailBeResponse data = 2;
+}
+
+//实例详情
+message FlowInstanceDetailBeResponse {
+  //工作流实例ID
+  int64 instanceId = 1;
+  //表单信息
+  FormFieldResponse formField = 2;
+  //申请时间
+  google.protobuf.Timestamp applyTime = 3;
+  //操作时间
+  google.protobuf.Timestamp auditTime = 4;
+  //申请人ID
+  int64 applicant = 5;
+  //模板名(申请类型)
+  int64 flowTemplateId = 6;
+  //审批状态
+  EnumStatus enumStatus = 7;
+  //原因
+  string reason = 8;
+  //租户ID
+  int64 tenantId = 9;
+  //编辑目标ID
+  int64 editTargetId = 10;
+  //操作人
+  int64 handlerId = 11;
+  //表单Json
+  string formJson = 12;
+  //
+  AgentInfo agentInfo = 13;
+  //更新时间
+  google.protobuf.Timestamp updateTime = 14;
+  //token
+  string token = 15;
+  //
+  repeated DetailInfo  detailInfos = 16;
+  // 创建人姓名
+  string createName = 17;
+  // 审批人姓名
+  string handlerName = 18;
+  // 节点等级
+  int32 approveNodeLevel = 19;
+  //更新时间
+  google.protobuf.Timestamp startTime = 20;
+  //多级审批信息
+  repeated MultiLevelApprovalInfo multiLevelApprovalInfo = 21 ;
+}
+
+message MultiLevelApprovalInfo{
+  //当前级别
+  int32 currentLevel = 1;
+
+  //审批时间
+  google.protobuf.Timestamp approveTime = 2;
+
+  //操作人
+  int64 handlerId = 3;
+}
+
+//查询实例分页信息响应
+message FlowInfoListBeResponse {
+  // 总记录数
+  int64 total = 1;
+  // 数据
+  repeated FlowInfoDetailBeResponse data = 2;
+}
+
+//实例详情
+message FlowInfoDetailBeResponse {
+  //工作流实例ID
+  int64 instanceId = 1;
+  //表单信息
+  FormFieldResponse  formField = 2;
+  //申请时间
+  google.protobuf.Timestamp applyTime = 3;
+  //操作时间
+  google.protobuf.Timestamp auditTime = 4;
+  //申请人ID
+  int64 applicant = 5;
+  //模板名(申请类型)
+  int64 flowTemplateId = 6;
+  //审批状态
+  EnumStatus enumStatus = 7;
+  //原因
+  string reason = 8;
+  //租户ID
+  int64 tenantId = 9;
+  //编辑目标ID
+  int64 editTargetId = 10;
+  //操作人
+  int64 handlerId = 11;
+  //旧数据Json
+  string formJson = 12;
+  //
+  AgentInfo agentInfo = 13;
+  //更新时间
+  google.protobuf.Timestamp updateTime = 14;
+  //token
+  string token = 15;
+  //新数据json
+  string newJson = 16;
+  //申请人姓名
+  string createName = 17;
+
+}
+
+message AgentInfo{
+  string agentNo = 1;
+  string agentName = 2;
+  int32 agentId = 3;
+}
+
+//查询实例分页信息请求
+message FlowInstanceBeRequest {
+  // 是否分页 默认分页
+  bool paged = 1;
+  // 当前页（从0开始）
+  int32 curPage = 2;
+  // 页面大小
+  int32 pageSize = 3;
+  //申请开始时间
+  optional string startTime = 4;
+  //申请结束时间
+  optional string endTime = 5;
+  //申请人ID
+  repeated int64 applicantIds = 6;
+  //审核状态  0未发起 1审批中 2审批通过 3审批驳回 4撤销
+  optional EnumStatus status = 7;
+  //表单指定内容字段查询
+  optional FormField formField = 8;
+  //审批时间
+  optional string auditTime = 9;
+  //模板类型id
+  repeated int64 flowTemplateId = 10;
+  //实例id
+  optional int64 instanceId = 11;
+  //目标编辑ID
+  repeated int64 editTargetIds = 12;
+  //租户ID
+  repeated int32 tenantId = 13;
+  //表单模板ID
+  int64 formTempId = 14;
+  //节点
+  optional int32 approveNodeLevel = 15;
+  //审批开始生效时间 true用质保时间 false不用
+  optional bool showDataByStartTimeFlag = 16;
+  //排序字段
+  optional string sortField = 17;
+  //审批流开始时间
+  optional string flowStartTime = 18;
+  //审批流结束时间
+  optional string flowEndTime = 19;
+  //状态集合
+  repeated int32 statuses = 20;
+    //需要排除的申请人ID
+    repeated int64 excludeApplicantIds = 21;
+}
+
+message StatusCountResponse{
+  //待审核数
+  int32 todoCount = 1;
+  //通过数
+  int32 passCount = 2;
+  //驳回数
+  int32 rejectCount = 3;
+  //撤销数
+  int32 revokeCount = 4;
+
+}
+
+//表单模板请求
+message QueryFormTemplateRequest {
+
+  //流实例ID
+  int64 formTempId = 1 [(validate.rules).int64.gt = 0];
+
+}
+
+//表单模板响应
+message QueryFormTemplateResponse {
+
+  //table
+  repeated TableMapping table = 1;
+  //form
+  FormMapping form = 2;
+}
+
+//查询实例分页信息请求
+message FlowInfoBeRequest {
+  // 是否分页 默认分页
+  bool paged = 1;
+  // 当前页（从0开始）
+  int32 curPage = 2;
+  // 页面大小
+  int32 pageSize = 3;
+  //申请开始时间
+  optional string startTime = 4;
+  //申请结束时间
+  optional string endTime = 5;
+  //申请人ID
+  repeated int64 applicantAccountIds = 6;
+  //审核状态  0未发起 10审批中 20审批通过 30审批驳回 40撤销
+  optional EnumStatus status = 7;
+  //表单指定内容字段查询
+  FormField formField = 8;
+  //审批时间
+  optional string auditTime = 9;
+  //模板类型id
+  repeated int64 flowTemplateId = 10;
+  //实例id
+  optional int64 instanceId = 11;
+  //目标编辑ID
+  repeated int64 editTargetIds = 12;
+  //租户ID
+  repeated int32 tenantId = 13;
+  //表单模板ID
+  int64 formTempId = 14;
+
+
+}
+
+//表单模板响应
+message TableMapping {
+
+  //表单模板ID
+  int64 formTempId = 1;
+
+  //审批状态
+  int32 status = 2;
+  //
+  repeated Mapping tableMapping = 3;
+
+
+}
+
+message FormMapping {
+
+  //表单模板ID
+  int64 formTempId = 1;
+
+  //类型
+  int32 applyType = 2;
+  //s
+  repeated Mapping formMapping = 3;
+
+
+}
+
+//表单模板响应
+message Mapping {
+
+  //字段
+  string column = 1;
+  //标签
+  string label = 2;
+  //下标
+  int32 index = 3;
+  //是否显示
+  bool displayFlag = 4;
+
+  int32 fieldType = 5;
+
+  int32 applyType = 6;
+
+  bool controlFlag = 7;
+
+  string field = 8 ;
+
+  string type = 9;
+
+}
+// 表单字段
+message FormField {
+
+  optional string v1 = 1;
+  optional string v2 = 2;
+  optional string v3 = 3;
+  optional string v4 = 4;
+  optional string v5 = 5;
+  optional string v6 = 6;
+  optional string v7 = 7;
+  optional string v8 = 8;
+  optional string v9 = 9;
+  optional string v0 = 10;
+  optional string ext = 11;
+}
+
+// 表单字段
+message DetailInfo {
+
+  string displayValue = 1;
+  string value = 2;
+  bool controlFlag = 3;
+
+  string column = 4;
+
+  string field = 5;
+
+}
+
+// 表单字段
+message FormFieldResponse {
+
+  optional DetailInfo v1 = 1;
+  optional DetailInfo v2 = 2;
+  optional DetailInfo v3 = 3;
+  optional DetailInfo v4 = 4;
+  optional DetailInfo v5 = 5;
+  optional DetailInfo v6 = 6;
+  optional DetailInfo v7 = 7;
+  optional DetailInfo v8 = 8;
+  optional DetailInfo v9 = 9;
+  optional DetailInfo v0 = 10;
+  optional string ext = 11;
+  repeated DetailInfo extDetailInfo = 12;
+}
+
+
+
+
+

@@ -1,0 +1,827 @@
+form:
+  templates:
+    - templateId: 1001 #推荐官入驻
+      query:
+        - column: v0
+          label: "推荐官名称"
+        - column: "applicantName"
+          label: "申请人"
+        - column: "applyStartTime"
+          label: "申请时间(起始)"
+        - column: "applyEndTime"
+          label: "申请时间(截止)"
+      form:
+        - column: v0
+          label: "推荐官名称"
+        - column: v1
+          label: "推荐官地区"
+          fieldType: 10 # 0 其他，1，员工，2.组织机构，3. 角色
+          controlFlag: true
+        - column: v2
+          label: "运营管理员"
+          fieldType: 2
+          controlFlag: true
+        - column: v3
+          label: "有效期"
+          fieldType: 20
+        - column: v4
+          label: "联系人姓名"
+        - column: v5
+          label: "联系人电话"
+        - column: v6
+          label: "联系人身份证"
+        - column: v7
+          label: "付款凭证"
+        - column: v8
+          label: "面试档案表"
+        - column: v9
+          label: "推荐官知情告知函"
+        - column: v10
+          label: "推荐官合作协议"
+      table:
+        - column: v0
+          label: "推荐官名称"
+          index: 0
+          displayFlag: true
+        - column: v4
+          label: "负责人"
+          index: 1
+          displayFlag: true
+        - column: v5
+          label: "负责人联系方式"
+          index: 2
+          displayFlag: true
+        - column: v2
+          label: "运营管理员"
+          index: 3
+          displayFlag: true
+        - column: v3
+          label: "有效期"
+          index: 4
+          displayFlag: true
+        - column: v1
+          label: "推荐官地区"
+          index: 5
+          displayFlag: true
+        - column: "applyTime"
+          label: "申请时间"
+          index: 6
+          status: 10
+          displayFlag: true
+        - column: "applicant"
+          label: "申请人"
+          index: 7
+          displayFlag: true
+          status: 10
+        - column: "approveTime"
+          label: "审核时间"
+          index: 6
+          displayFlag: true
+          status: 20
+        - column: "handler"
+          label: "审核人"
+          index: 7
+          displayFlag: true
+          status: 20
+        - column: "approveTime"
+          label: "审批时间"
+          index: 6
+          displayFlag: true
+          status: 30
+        - column: "handler"
+          label: "审批人"
+          index: 7
+          displayFlag: true
+          status: 30
+        - column: reason
+          label: "原因"
+          index: 8
+          displayFlag: true
+          status: 30
+        - column: "approveTime"
+          label: "撤销时间"
+          index: 6
+          displayFlag: true
+          status: 40
+        - column: "handler"
+          label: "撤销人"
+          index: 7
+          displayFlag: true
+          status: 40
+    #----------------------------------------------------------------------------
+    - templateId: 1002 #创建编辑账号
+      query:
+        - column: v0
+          label: "推荐官编号"
+        - column: v1
+          label: "推荐官名称"
+        - column: "applyType"
+          label: "推荐官名称"
+        - column: "applyStartTime"
+          label: "申请时间(起始)"
+        - column: "applyEndTime"
+          label: "申请时间(截止)"
+      form:
+        - column: v0
+          label: "推荐官"
+          applyType: 1002
+          fieldType: 1
+        - column: v1
+          label: "账号姓名"
+          applyType: 1002
+        - column: v2
+          label: "账号类型"
+          applyType: 1002
+          enumValue: { "1": "主账号","2": "子账号" }
+        - column: v3
+          label: "手机号"
+          applyType: 1002
+        - column: v4
+          label: "身份证号"
+          applyType: 1002
+        - column: v5
+          label: "所在地"
+          applyType: 1002
+          fieldType: 10
+        - column: v0
+          label: "推荐官"
+          applyType: 1003
+          fieldType: 1
+        - column: v1
+          label: "账号姓名"
+          applyType: 1003
+        - column: v2
+          label: "账号类型"
+          applyType: 1003
+          enumValue: { "1": "主账号","2": "子账号" }
+        - column: v3
+          label: "手机号"
+          applyType: 1003
+        - column: v4
+          label: "身份证号"
+          applyType: 1003
+        - column: v5
+          label: "所在地"
+          applyType: 1003
+          fieldType: 10
+        - column: v0
+          label: "推荐官"
+          applyType: 1004
+          fieldType: 1
+        - column: v1
+          label: "账号类型"
+          applyType: 1004
+          enumValue: { "0": "公司","1": "个人" }
+        - column: v2
+          label: "账户名称/姓名"
+          applyType: 1004
+        - column: v3
+          label: "银行账号"
+          applyType: 1004
+        - column: v4
+          label: "开户行"
+          applyType: 1004
+        - column: v5
+          label: "开户地区"
+          applyType: 1004
+          fieldType: 10
+        - column: v6
+          label: "身份证"
+          applyType: 1004
+        - column: v7
+          label: "手机号"
+          applyType: 1004
+        - column: v0
+          label: "推荐官"
+          applyType: 1005
+          fieldType: 1
+        - column: v1
+          label: "账号类型"
+          applyType: 1005
+          enumValue: { "0": "公司","1": "个人" }
+        - column: v2
+          label: "账户名称/姓名"
+          applyType: 1005
+        - column: v3
+          label: "银行账号"
+          applyType: 1005
+        - column: v4
+          label: "开户行"
+          applyType: 1005
+        - column: v5
+          label: "开户地区"
+          applyType: 1005
+          fieldType: 10
+        - column: v6
+          label: "身份证"
+          applyType: 1005
+        - column: v7
+          label: "手机号"
+          applyType: 1005
+      table:
+        - column: agentNo
+          label: "推荐官编号"
+          index: 0
+          displayFlag: true
+        - column: v0
+          label: "推荐官"
+          index: 1
+          displayFlag: true
+        - column: "applyType"
+          label: "申请类型"
+          index: 2
+          displayFlag: true
+        - column: "applyTime"
+          label: "申请时间"
+          index: 3
+          displayFlag: true
+          status: 10
+        - column: "applyTime"
+          label: "申请时间"
+          index: 3
+          displayFlag: true
+          status: 20
+        - column: "applyTime"
+          label: "申请时间"
+          index: 3
+          displayFlag: true
+          status: 30
+        - column: "applyTime"
+          label: "申请时间"
+          index: 3
+          displayFlag: true
+          status: 40
+        - column: "approveTime"
+          label: "审核时间"
+          index: 4
+          displayFlag: true
+          status: 20
+        - column: "handler"
+          label: "审核人"
+          index: 5
+          status: 20
+        - column: "approveTime"
+          label: "审核时间"
+          index: 4
+          displayFlag: true
+          status: 30
+        - column: "handler"
+          label: "审核人"
+          index: 5
+          displayFlag: true
+          status: 30
+        - column: reason
+          label: "原因"
+          index: 6
+          displayFlag: true
+          status: 30
+        - column: "approveTime"
+          label: "撤销时间"
+          index: 4
+          displayFlag: true
+          status: 40
+        - column: "handler"
+          label: "撤销人"
+          index: 5
+          status: 40
+    #----------------------------------------------------------------------------
+    - templateId: 1003 #账号管理
+      query:
+        - column: v0
+          label: "账号名"
+        - column: v1
+          label: "手机号"
+        - column: "status"
+          label: "审核状态筛选"
+      form:
+        - column: v0
+          label: "推荐官"
+          fieldType: 1
+        - column: v1
+          label: "账号姓名"
+        - column: v2
+          label: "账号类型"
+          enumValue: { "1": "主账号","2": "子账号" }
+        - column: v3
+          label: "手机号"
+          maskingType: 1
+        - column: v4
+          label: "身份证号"
+          maskingType: 2
+        - column: v5
+          label: "所在地"
+          fieldType: 10
+      table:
+        - column: id
+          label: "账号ID"
+          index: 0
+        - column: v1
+          label: "账户姓名"
+          index: 1
+          displayFlag: true
+        - column: v3
+          label: "手机号/账号"
+          index: 2
+          displayFlag: true
+        - column: v4
+          label: "身份证号码"
+          index: 3
+          displayFlag: true
+        - column: v2
+          label: "账号类型"
+          index: 4
+          displayFlag: true
+        - column: "status"
+          label: "审核状态"
+          index: 5
+          displayFlag: true
+        - column: "updateTime"
+          label: "更新时间"
+          index: 5
+          displayFlag: true
+    #----------------------------------------------------------------------------
+    - templateId: 1004 #收款户管理
+      query:
+        - column: v0
+          label: "账号名"
+        - column: "status"
+          label: "审核状态筛选"
+      form:
+        - column: v0
+          label: "推荐官"
+          fieldType: 1
+        - column: v1
+          label: "账号类型"
+          enumValue: { "0": "公司","1": "个人" }
+        - column: v2
+          label: "账户名称/姓名"
+        - column: v3
+          label: "银行账号"
+        - column: v4
+          label: "开户行"
+        - column: v5
+          label: "开户地区"
+          fieldType: 10
+        - column: v6
+          label: "身份证"
+        - column: v7
+          label: "手机号"
+      table:
+        - column: v1
+          label: "类型"
+          index: 0
+        - column: v2
+          label: "名称"
+          index: 1
+          displayFlag: true
+        - column: v4
+          label: "开户行"
+          index: 2
+          displayFlag: true
+        - column: "status"
+          label: "审核状态"
+          index: 3
+          displayFlag: true
+        - column: updateTime
+          label: "更新时间"
+          index: 4
+          displayFlag: true
+    #----------------------------------------------------------------------------
+    - templateId: 1005 #项目创建
+      query:
+        - column: createId
+          label: "提交人"
+        - column: v0
+          label: "项目编号"
+          field: projectNumber
+        - column: v1
+          label: "项目名称"
+          field: projectName
+        - column: v2
+          label: "客户名称"
+          field: customerId
+        - column: applyStartTime
+          label: "提交时间(起始)"
+        - column: applyEndTime
+          label: "提交时间(截止)"
+      form:
+        - column: v1
+          label: "项目名称"
+          field: projectName
+        - column: v0
+          label: "项目编号"
+          field: projectNumber
+        - column: v2
+          label: "客户名称"
+          field: customerId
+        - column: v3
+          label: "合同名称"
+          field: contractId
+          type: string
+        - column: v4
+          label: "执行PM"
+          field: executePmAccountId
+          fieldType: 4
+          type: int
+        - column: v5
+          label: "服务PM"
+          type: string
+          field: servicePmAccountId
+          fieldType: 4
+        - column: v6
+          label: "执行销售"
+          type: int
+          field: executeSaleAccountId
+          fieldType: 4
+        - column: v7
+          label: "执行业绩归属城市"
+          type: string
+          field: executePmCity
+          fieldType: 10
+        - column: v8
+          label: "服务业绩归属城市"
+          fieldType: 10
+        - column: v9
+          label: "项目发薪渠道"
+          type: int
+          field: payrollChannel
+          enumValue: { "0": "银企直联","1": "微信发薪" }
+        - column: v10
+          label: "发薪日"
+        - column: v11
+          label: "项目是否有人缴纳社保"
+          enumValue: { "0": "否","1": "是" }
+        - column: v12
+          label: "社保专员"
+          field: socialSecurity
+        - column: v13
+          label: "是否隐藏公司信息"
+          enumValue: { "0": "否","1": "是" }
+        - column: v14
+          label: "内推职位隐藏公司信息"
+          field: hideCompanyInfoFlag
+          enumValue: { "0": "否","1": "是" }
+        - column: v15
+          label: "在线发送工资单"
+          field: onlineSendPayrollFlag
+          enumValue: { "0": "否","1": "是" }
+        - column: v16
+          label: "岗位工作城市"
+          field: workCity
+          fieldType: 10
+        - column: v17
+          label: "执行状态"
+          field: projectExecuteStatus
+          enumValue: { "1": "执行","2": "暂停", "3": "停止" }
+        - column: v18
+          label: "参与执行PM"
+          field: executePmAccountIdExt
+          fieldType: 4
+        - column: v19
+          label: "参与服务PM"
+          field: servicePmAccountIdExt
+          fieldType: 4
+        - column: v20
+          label: "客户名称"
+        - column: v21
+          label: "合同名称"
+        - column: v22
+          label: "业务类型"
+        - column: v23
+          label: "项目自定义名称"
+        - column: v24
+          label: "不发工资单原因"
+          enumValue: { "1": "客户不让我们发工资条","2": "需要提前发工资条核对", "3": "不需要线上发薪","4":"项目薪资结构复杂，不适合群发","5":"日结/周结/兼职，不需要发工资单","6":"其他" }
+        - column: v25
+          label: "不发工资单其他原因"
+        - column: v26
+          label: "服务业绩归属id"
+        - column: v27
+          label: "执行业绩归属id"
+        - column: v28
+          label: "自定义名称"
+        - column: v29
+          label: "品牌名称"
+        - column: v30
+          label: "服务业绩归属id"
+        - column: v31
+          label: "执行业绩归属id"
+        - column: v32
+          label: "执行pmid"
+        - column: v33
+          label: "服务pmid"
+        - column: v34
+          label: "执行销售id"
+        - column: v35
+          label: "参与执行Id"
+        - column: v36
+          label: "参与服务pmid"
+      table:
+        - column: createName
+          label: "提交人"
+          field: createName
+          index: 0
+        - column: createTime
+          label: "提交时间"
+          index: 1
+        - column: v0
+          label: "项目编号"
+          index: 3
+          displayFlag: true
+          status: 10
+        - column: v0
+          label: "项目编号"
+          index: 3
+          displayFlag: true
+          status: 20
+        - column: v0
+          label: "项目编号"
+          index: 3
+          displayFlag: true
+          status: 30
+        - column: v0
+          label: "项目编号"
+          index: 3
+          displayFlag: true
+          status: 40
+        - column: v1
+          label: "项目名称"
+          index: 4
+        - column: v20
+          label: "客户名称"
+          index: 5
+        - column: v21
+          label: "合同名称"
+          index: 6
+        - column: v7
+          label: "执行业绩归属"
+          index: 7
+          type: string
+          field: executePmCity
+        - column: v4
+          label: "执行PM"
+          index: 8
+        - column: v8
+          label: "服务业绩归属"
+          type: string
+          index: 9
+        - column: v5
+          label: "服务PM"
+          type: string
+          index: 11
+          field: servicePmAccountName
+        - column: v6
+          label: "执行销售"
+          index: 12
+        - column: handler
+          label: "审核人"
+          index: 13
+          status: 20
+        - column: auditTime
+          label: "审核时间"
+          index: 14
+          displayFlag: true
+          status: 20
+        - column: handler
+          label: "审核人"
+          index: 13
+          status: 30
+        - column: auditTime
+          label: "审核时间"
+          index: 14
+          displayFlag: true
+          status: 30
+        - column: reason
+          label: "原因"
+          index: 15
+          displayFlag: true
+          status: 30
+        - column: handler
+          label: "撤销人"
+          index: 13
+          status: 40
+        - column: auditTime
+          label: "撤销时间"
+          index: 14
+          displayFlag: true
+          status: 40
+    #----------------------------------------------------------------------------
+    - templateId: 1006 #内推奖励审批
+      query:
+        - column: v0
+          label: "人选编号"
+          index: 0
+        - column: v1
+          label: "人选姓名"
+          index: 1
+        - column: v2
+          label: "人选手机号"
+          index: 2
+        - column: v3
+          label: "职位ID"
+          index: 3
+        - column: v4
+          label: "职位名称"
+          index: 3
+        - column: v5
+          label: "推荐人手机号"
+          index: 4
+        - column: v6
+          label: "推荐人姓名"
+          index: 5
+          type: string
+          field: refereeName
+        - column: v7
+          label: "寻访顾问"
+          index: 6
+        - column: v8
+          label: "推广人姓名"
+          index: 7
+        - column: v24
+          label: "推荐人是内部员工"
+      form:
+      table:
+        - column: v0
+          label: "人选编号"
+          field: candidateNo
+          index: 0
+        - column: v1
+          label: "人选姓名"
+          field: candidateName
+          index: 1
+        - column: v2
+          label: "人选手机号"
+          index: 2
+        - column: v3
+          label: "职位"
+          field: jobName
+          type: string
+          index: 4
+        - column: v5
+          label: "推荐人手机号"
+          index: 11
+          field: refereeTel
+          type: string
+        - column: v6
+          label: "推荐人姓名"
+          index: 5
+          type: string
+          field: refereeName
+        - column: v7
+          label: "寻访顾问"
+          index: 13
+          type: int
+          field: ccId
+        - column: v8
+          label: "推广人姓名"
+          index: 14
+          type: string
+          field: promoterName
+        - column: v9
+          label: "推荐人是内部员工"
+          type: string
+          index: 12
+          field: isInsideFlag
+        - column: v10
+          label: "项目"
+          type: string
+          index: 3
+          field: project
+        - column: v11
+          label: "奖励条件"
+          type: string
+          index: 5
+          field: condition
+        - column: v12
+          label: "审核节点"
+          type: string
+          index: 6
+          field: attendanceRule
+        - column: v13
+          label: "奖励金额"
+          type: string
+          index: 7
+          field: rewardAmount
+        - column: v14
+          label: "入职日期"
+          field: onboardTime
+          index: 8
+        - column: v15
+          label: "离职日期"
+          index: 9
+          field: quitTime
+        - column: v16
+          label: "推荐人所属组织"
+          field: refereeGroup
+          index: 15
+        - column: v17
+          label: "PM"
+          index: 16
+          field: pm
+          displayFlag: true
+        - column: v18
+          label: "PM所在城市"
+          field: pmCity
+          index: 17
+        - column: applyTime
+          label: "生成时间"
+          field: applyTime
+          index: 18
+          displayFlag: true
+        - column: approveTime
+          label: "审核时间"
+          index: 19
+          field: approveTime
+          displayFlag: true
+          status: 11
+        - column: approveTime
+          label: "审核时间"
+          index: 19
+          field: approveTime
+          status: 12
+        - column: approveTime
+          label: "审核时间"
+          index: 19
+          field: approveTime
+          status: 13
+        - column: v20
+          label: "打款时间"
+          field: payTime
+          index: 20
+          displayFlag: true
+          status: 12
+        - column: reason
+          label: "原因"
+          index: 14
+          field: reason
+          displayFlag: true
+          status: 30
+    #----------------------------------------------------------------------------
+    - templateId: 1007 #内推规则
+      query:
+        - column: v0
+          label: "职位ID"
+          index: 0
+        - column: v1
+          label: "职位名"
+          index: 1
+        - column: v2
+          label: "企业"
+          index: 2
+        - column: v3
+          label: "品牌"
+          index: 3
+        - column: v4
+          label: "用工类型"
+          index: 4
+        - column: v5
+          label: "职位负责人"
+          index: 5
+          type: string
+          field: refereeName
+        - column: v6
+          label: "职位负责人城市"
+          index: 6
+      form:
+        - column: v0
+          label: "职位ID"
+          index: 0
+        - column: v1
+          label: "职位名"
+          index: 1
+        - column: v2
+          label: "企业"
+          index: 2
+        - column: v3
+          label: "品牌"
+          field: jobName
+          type: string
+          index: 3
+        - column: v4
+          label: "用工类型"
+          index: 4
+          type: string
+        - column: v5
+          label: "职位负责人"
+          index: 5
+          type: string
+          field: refereeName
+        - column: v6
+          label: "职位负责人城市"
+          index: 6
+        - column: v8
+          label: "内推入职奖励条件"
+          index: 6
+      table:
+        - column: v10
+          label: "基本信息"
+          index: 0
+        - column: v1
+          label: "负责人"
+          index: 1
+        - column: v7
+          label: "内推入职奖励总额"
+          index: 2
+        - column: v8
+          label: "内推入职奖励条件"
+          index: 3

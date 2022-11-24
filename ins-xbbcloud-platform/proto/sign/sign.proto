@@ -1,0 +1,545 @@
+syntax = "proto3";
+package xbbcloud;
+option java_package = "cn.xunhou.grpc.proto.xbbcloud";
+option java_outer_classname = "SignServerProto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+
+service SignServer{
+
+  //查询签约云基本信息
+  rpc signInfoList(SignInfoListRequest) returns (SignInfoListResponse){}
+
+  //保存签约云基本信息
+  rpc saveSignInfo(SignInfoRequest) returns (SignInfoResponse){}
+
+  //查询签约云基本信息
+  rpc signInfo(SignInfoIdRequest) returns (SignInfoResponse){}
+
+  //保存或者更新岗位二维码
+  rpc saveOrUpdateQrcode(PositionQrcodeSaveRequest) returns (PositionQrcodeSaveResponse){}
+  //批量保存
+  rpc batchInsertContract(BatchInsertContractRequest) returns (BatchInsertContractResponse){}
+
+  //批量更新
+  rpc batchUpdateContract(BatchUpdateContractRequest) returns (google.protobuf.Empty){}
+  //岗位二维码分页列表
+  rpc positionQrcodeList(QrcodeListQueryRequest) returns (PagePositionQrcodeResponse) {}
+  //岗位二维码详情
+  rpc positionQrcodeDetail(QrcodeDetailQueryRequest) returns (PositionQrcodeResponse) {}
+
+  //获取合同签名地址
+  rpc getBestSignUrl(GetBestSignUrlRequest)  returns (BestSignUrlResponse) {}
+  //合同列表
+  rpc contractList(ContractListRequest) returns (ContractPageListResponse){}
+
+  //签署合同
+  rpc contractSignComplete(ContractSignCompleteRequest) returns (google.protobuf.Empty){}
+  //生成合同模板数据
+  rpc initTemplate(InitTemplateListRequest) returns (google.protobuf.Empty){}
+
+  //上传合同到oss
+  rpc saveContractPdfToOss(saveContractPdfToOssRequest) returns (saveContractPdfToOssResponse){}
+}
+message saveContractPdfToOssRequest{
+  //上上签业务id
+  string serviceBusinessId = 1;
+}
+message saveContractPdfToOssResponse{
+  //返回的ossId
+  string ossId = 1;
+}
+message InitTemplateListRequest{
+  repeated InitTemplateRequest data = 1;
+}
+message InitTemplateRequest{
+  //劳动合同-上上签
+  string bestSignEnterpriseAccount = 1;
+  //合同id
+  int64 contractId = 2;
+  string templateNo = 3;
+  string  name = 4;
+}
+message ContractSignCompleteRequest{
+  int64 contractId = 1;
+  string templateNo = 2;
+  repeated string stampVars = 3;
+}
+
+message GetBestSignUrlRequest{
+
+  int64 contractId = 1;
+  string signReturnUrl = 2;
+  string notifyUrl = 3;
+  bool checkContractSignStatus = 4;
+  string idCardNo = 5;
+  string realName = 6;
+  string tel = 7;
+  string templateNo = 8;
+  repeated string signVars = 9;
+}
+message BestSignUrlResponse{
+  string url = 1;
+
+}
+message ContractDynamicResponse{
+
+  //属性中文名称
+  string propertyCNName = 1;
+
+
+  //属性name
+  string propertyName = 2;
+
+  //属性value
+  string propertyValue = 3;
+
+
+  repeated TextValueResult propertySelectValue = 4;
+
+
+  //属性类型name
+  string propertyTypeName = 5;
+
+
+  //属性类型code
+  string propertyTypeCode = 6;
+
+}
+
+message    TextValueResult {
+  string value = 1;
+  string  text = 2;
+  int32 type = 3;
+}
+
+message ContractPageListResponse{
+  // 总记录数
+  int32 total = 1;
+  // 数据
+  repeated ContractListResponse data = 2;
+}
+message PagePositionQrcodeResponse{
+  // 总记录数
+  int32 total = 1;
+  // 数据
+  repeated PositionQrcodeResponse data = 2;
+}
+
+
+message PositionQrcodeResponse{
+
+  //岗位二维码Id
+  int64 id = 1;
+
+  //岗位ID
+  int64 hroPositionId = 2;
+
+
+  //过期时间
+  string expireDate = 3;
+
+  //岗位备注
+  string remark = 4;
+
+
+  //模板json
+  string templateJson = 5;
+
+  //创建时间
+  string createdAt = 6;
+
+  //更新日期
+  string updatedAt = 7;
+  //操作人
+  int64 operatorId = 8;
+  //合同和协议 list
+  repeated ContractTemplate contractTemplate = 9;
+  //可签署的手机号list
+  repeated string tel = 10;
+  //签署主体id
+  optional int64 subjectId = 11;
+  //0不缴纳社保 1缴纳社保
+  optional int32 socialInsurance = 12;
+  //合同模板类型
+  int32 contractTemplateType = 13;
+  //租户id
+  int64 tenantId = 14;
+}
+message ContractListResponse{
+  //身份证号
+  string idCardNo = 1;
+
+  //员工id
+  int64 employeeId = 2;
+
+
+  //岗位二维码id
+  int64 sourceBusinessId = 3;
+
+  //上上签合同、协议模板id
+  int64 templateId = 4;
+
+  //签署主体id
+  int64 subjectId = 5;
+
+  //租户id
+  int64 tenantId = 6;
+
+  //类型 1合同，2协议
+  int32 type = 7;
+
+
+  //编号
+  string contractNo = 8;
+
+  //签约日期
+  string signDate = 9;
+
+  //状态 待签署0 待确认1 待生效2 生效中3  已到期4 已作废5  提前终止6
+  int32 status = 10;
+
+  //上上签模板json
+  string templateJson = 11;
+
+
+  //电子合同文件系统id
+  string contractOssId = 12;
+
+
+  //第三方相应id
+  string serviceBusinessId = 13;
+
+  //创建日期
+  string createTime = 14;
+
+  //更新日期
+  string modifytime = 15;
+
+  //合同表主键id
+  int64 id = 16;
+
+}
+message QrcodeDetailQueryRequest{
+  //主键id
+  int64 id = 1;
+
+}
+
+message QrcodeListQueryRequest{
+
+  // 当前页（从0开始）
+  int32 curPage = 1;
+  // 页面大小
+  int32 pageSize = 2;
+
+  //搜索创建时间起
+  optional string createDateStart = 3;
+
+  //搜索创建时间截止
+  optional string createDateEnd = 4;
+
+  //岗位idList
+  repeated int64 hroPositionId = 5;
+  //租户id
+  optional int64 tenantId = 6;
+
+}
+message ContractListRequest{
+  // 当前页（从0开始）
+  optional int32 curPage = 1;
+  // 页面大小
+  optional int32 pageSize = 2;
+
+
+  //身份证号
+  optional string idCardNo = 3;
+  repeated string idCardNos = 4;
+
+  //员工id
+  optional int64 employeeId = 5;
+
+  repeated int64  employeeIds = 6;
+
+  // 数据来源 0岗位二维码签约
+  optional int32 source = 7;
+
+
+  //租户id
+  optional int64 tenantId = 8;
+
+
+
+  //合同类型
+  optional int32 type = 9;
+
+
+  //合同状态
+  optional int32 status = 10;
+
+  //合同状态集合
+  repeated  int32  statusList = 11;
+
+
+
+  // 根据数据来源关联业务id
+  optional int64 sourceBusinessId = 12;
+  //主键ids
+  repeated int64  ids = 13;
+  //主键
+  optional int64  id = 14;
+  //排除的主键
+  repeated int64 excludeIds = 15;
+  //所有的类型
+  repeated int32 types = 16;
+
+
+}
+enum EnumSignCustomerType{
+  CT_UNKNOWN = 0;
+  //内部
+  CT_INSIDE = 1;
+}
+enum EnumSigner{
+  //未知
+  UNKNOWN = 0;
+  //甲方
+  FIRST_PARTY = 1;
+  //乙方
+  SECOND_PARTY = 2;
+
+}
+
+enum EnumPropertyType {
+  //未知
+  UNKNOWN_TYPE = 0;
+  //输入框
+  INPUT = 1;
+  //下拉框
+  SELECT = 2;
+  //日期下拉框
+  DATA_SELECT = 3;
+  //城市下拉框
+  CITY_SELECT = 4;
+  //开户行下拉框
+  BANK_SELECT = 5;
+}
+message SignInfoIdRequest{
+  int64 tenantId = 1;
+}
+
+message SignInfoRequest{
+  //租户id
+  int64 tenantId = 1;
+  //操作人id
+  int64 operatorId = 2;
+  //客户类型
+  EnumSignCustomerType  customerType = 3;
+  //项目id
+  repeated int64 projectIds = 4;
+  //到期时间 yyyy-MM-dd hh:mm:ss
+  string useToDate = 5;
+  //商务合同
+  int64 businessContractId = 6;
+  //签约云商务合同客户id
+  int64 businessContractCustomerId = 7;
+  //项目id关联岗位ids
+  repeated int64 positionIds = 8;
+}
+
+message SignInfoResponse{
+  //租户id
+  int64 tenantId = 1;
+  //客户类型
+  EnumSignCustomerType  customerType = 2;
+  //项目id
+  repeated int64 projectIds = 3;
+  //更新时间
+  string  updateTime = 4;
+  //到期时间 yyyy-MM-dd hh:mm:ss
+  string useToDate = 5;
+  //商务合同
+  int64 businessContractId = 6;
+  //签约云商务合同客户id
+  int64 businessContractCustomerId = 7;
+}
+message BatchInsertContractRequest{
+
+  repeated InsertContractRequest insertContractRequest = 1;
+
+
+}
+
+
+message BatchUpdateContractRequest{
+
+  repeated UpdateContractRequest updateContractRequest = 1;
+
+
+}
+message UpdateContractRequest{
+  //模板json
+  optional string templateJson = 1;
+
+  //合同id
+  int64 id = 2;
+
+  //删除标识
+  optional int32 deletedFlag = 3;
+
+
+  //签约日期
+  optional int64 signDate = 4;
+
+  //合同开始时间
+  optional int64 startTime = 5;
+
+  //合同截止时间
+  optional int64 endTime = 6;
+
+  //电子合同文件系统id
+  optional string  contractOssId = 7;
+
+  //状态 「未签署」、「待确认」、「待生效」、「生效中」、「已到期」、「已作废」、「提前终止」
+  optional int32 status = 8;
+  //员工id
+  optional int64 employeeId = 9;
+
+}
+
+message InsertContractRequest{
+
+  //身份证号
+  string idCardNo = 1;
+
+
+
+  //上上签合同、协议模板id
+  int64 templateId = 2;
+
+  //签署主体id
+  int64 subjectId = 3;
+
+  //租户id
+  int64 tenantId = 4;
+
+  //类型 1合同，2协议
+  int32 type = 5;
+
+  //状态
+  int32 status = 6;
+
+  //模板json
+  string templateJson = 7;
+
+
+  //数据来源 0岗位二维码签约
+  int32 source = 8;
+  //根据数据来源关联业务id
+  int64 sourceBusinessId = 9;
+  //主键id
+  optional int64  id = 10;
+  //合同编号
+  string contractNo = 11;
+}
+
+//合同状态
+enum  EnumContractStatus{
+  //待签署
+  WAIT_SIGN = 0;
+  //待确认
+  WAIT_CONFIRM = 1;
+  //待生效
+  WAIT_EFFECT = 2;
+
+  //生效中
+  EFFECTING = 3;
+
+  //已到期
+  OVERTIME = 4;
+
+  //已作废
+  CANCEL = 5;
+
+  //提前终止
+  EARLY_TERMINATION = 6;
+
+
+}
+//合同来源
+enum  EnumContractSource{
+  //劳务发薪
+  LABOR_SALARY = 0;
+
+
+}
+//模板类型
+enum  EnumTemplateType{
+  UN_KNOWN = 0;
+  //合同
+  CONTRACT = 1;
+  //协议
+  PROTOCOL = 2;
+}
+message PositionQrcodeSaveRequest{
+
+  //岗位ID
+  optional int64 hroPositionId = 1;
+  //0不缴纳社保 1缴纳社保
+  optional int32 socialInsurance = 2;
+  //过期时间
+  optional string expireDate = 3;
+  //合同动态模板json
+  optional string templateJson = 4;
+
+  //企业合同主体id
+  optional int64 subjectId = 5;
+
+  //备注
+  optional  string remark = 6;
+  //操作人员id
+  optional int64 operatorId = 7;
+
+  //岗位二维码id
+  optional int64 id = 8;
+
+  //租户id
+  optional int64 tenantId = 9;
+  //合同和协议 list
+  repeated ContractTemplate contractTemplate = 10;
+  //手机号list
+  repeated string tel = 11;
+  //逻辑删除标记
+  optional int32 deletedFlag = 12;
+  //合同模板类型
+  optional  int32 contractTemplateType = 13;
+
+}
+
+message PositionQrcodeSaveResponse{
+  //岗位二维码id
+  int64 id = 1;
+
+}
+message ContractTemplate{
+  //模板id
+  int64 templateId = 1;
+  //模板类型
+  int32 type = 2;
+}
+
+message BatchInsertContractResponse{
+  //返回的主键idList
+  repeated int64 idList = 1;
+
+}
+
+message SignInfoListRequest{
+  //小于等于有效期
+  optional string leUseToDate = 1;
+}
+message SignInfoListResponse{
+  repeated SignInfoResponse signInfoList = 1;
+}

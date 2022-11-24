@@ -1,0 +1,47 @@
+server:
+  port: 8089
+spring:
+  application:
+    name: ins-xbbcloud-platform
+    xbb:
+      jdbc:
+        enable: true
+        queryTimeout: 60
+  profiles:
+    include: form,workflow
+management:
+  metrics:
+    export:
+      prometheus:
+        pushgateway:
+          enabled: false
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+
+grpc:
+#  server:
+  #    port: 6515
+  client:
+    #调用的服务方的服务名
+    ins-xhportal-platform:
+      #是否保活
+      enableKeepAlive: true
+      #保活
+      keepAliveWithoutCalls: true
+      #区别于tls 我们采用plaintext
+      negotiationType: plaintext
+    ins-xhwallet-platform:
+      #是否保活
+      enableKeepAlive: true
+      #保活
+      keepAliveWithoutCalls: true
+      #区别于tls 我们采用plaintext
+      negotiationType: plaintext
+    ins-assetxh-platform:
+      #是否保活
+      enableKeepAlive: true
+      #保活
+      keepAliveWithoutCalls: true
+      #区别于tls 我们采用plaintext
+      negotiationType: plaintext

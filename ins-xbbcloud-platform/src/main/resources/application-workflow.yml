@@ -1,0 +1,174 @@
+workflow:
+  templates:
+    - templateId: 1001 # 推荐官入驻
+      templateName: "推荐官入驻审批"
+      description: "推荐官入驻审批"
+      postHandle: agentJoin
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "上级审批"
+          assigneeType: 1
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          event:   #XXXEvent发布事件(结束回调,用户通知等)
+          signType: 2 #1会签,2或签
+          approvetype: 1
+          preNode: 0
+          nextNode: 0 #下一个节点 可以是多个
+    #----------------------------------------------------------------------------
+    - templateId: 1002 #类型 账号新建
+      processName: "账号新建审批"
+      description: "账号新建审批"
+      postHandle: accountApply
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "上级审批"
+          assigneeType: 1
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          event: #XXXEvent发布事件(结束回调,用户通知等)
+          signType: 2 #1会签,2或签
+          approvetype: 1
+          nextNode: 0 #下一个节点 可以是多个
+    - templateId: 1003 #类型 账号编辑
+      templateName: "账号编辑审批"
+      description: "账号编辑审批"
+      postHandle: accountApply
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "上级审批"
+          assigneeType: 1
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          event:   #XXXEvent发布事件(结束回调,用户通知等)
+          signType: 2 #1会签,2或签
+          approvetype: 1
+          preNode: 0
+          nextNode: 0 #下一个节点 可以是多个
+    #----------------------------------------------------------------------------
+    - templateId: 1004 #类型 收款账号新建
+      templateName: "收款账号新建审批"
+      description: "收款账号新建审批"
+      postHandle: receiptAccountApply
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "上级审批"
+          assigneeType: 1
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          event:   #XXXEvent发布事件(结束回调,用户通知等)
+          signType: 2 #1会签,2或签
+          approvetype: 1
+          preNode: 0
+          nextNode: 0 #下一个节点 可以是多个
+    #----------------------------------------------------------------------------
+    - templateId: 1005 #类型 收款账号编辑
+      templateName: "收款账号编辑审批"
+      postHandle: receiptAccountApply
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "上级审批"
+          assigneeType: 1
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          event:   #XXXEvent发布事件(结束回调,用户通知等)
+          signType: 2 #1会签,2或签
+          approvetype: 1
+          preNode: 0
+          nextNode: 0 #下一个节点 可以是多个
+    #----------------------------------------------------------------------------
+    - templateId: 1006 #类型 项目新建
+      templateName: "项目新建"
+      description: "项目新建审批"
+      postHandle: projectApplyEvent
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "上级审批"
+          auditType:
+            type: 1
+            code: "HROSTAFF_PROJECT-AUDIT_UPDATE"
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          approvetype: 1
+          preNode: 0
+          nextNode: 0 #下一个节点 可以是多个
+    #----------------------------------------------------------------------------
+    - templateId: 1007 #类型
+      templateName: "内推奖励审批"
+      description: "内推奖励审批"
+      postHandle: rewardApplyEvent
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "一级审批"
+          auditType:
+            type: 1
+            code: "STARPRO_RECOMMENDATION-AWARD-APPROVED_UPDATE"
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          approvetype: 1
+          preNode: 0
+          nextNode: 2 #下一个节点 可以是多个
+        - level: 2 #
+          nodeName: "条件判断"
+          nodeType: 4  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          condition: checkPayCondition
+          preNode: 1
+          nextTrueSubNode: 0 #
+          nextFalseSubNode: 1 #
+        - level: 3 # node节点顺序
+          subLevel: 1
+          nodeName: "二级审批"
+          auditType:
+            type: 1
+            code: "STARPRO_RECOMMENDATION-AWARD-PAYMENT_UPDATE"
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          approvetype: 1
+          preNode: 1
+          nextNode: 0 #下一个节点 可以是多个
+    #----------------------------------------------------------------------------
+    - templateId: 1008 #类型
+      templateName: "内推规则审批"
+      description: "内推规则审批"
+      node:
+        - level: 0
+          nodeName: "创建审批"
+          nodeType: 1
+          nextNode: 1
+          approvetype: 1
+        - level: 1 # node节点顺序
+          nodeName: "上级审批"
+          auditType:
+            type: 1
+            code: "STARPRO_INTERPOLATION-RULE-APPROVED_UPDATE"
+          nodeType: 1  #1. 审批人，2.抄送人，3. 办理人，4条件分支
+          approvetype: 1
+          preNode: 0
+          nextNode: 0 #下一个节点 可以是多个
