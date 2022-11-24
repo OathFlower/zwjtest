@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 /**
- * @author sha.liqweqwe
+ * @author sha.liqweqwe ipconfig /flushdns
  * @since 2022/9/14
  */
 @Slf4j
