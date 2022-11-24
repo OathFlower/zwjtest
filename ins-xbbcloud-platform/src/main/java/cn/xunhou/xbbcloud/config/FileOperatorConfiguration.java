@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 /**
- * @author wangkm
+ * 删除
  */
 @Configuration
 public class FileOperatorConfiguration {
