@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: cn.xunhou.cloud:spring-cloud-xbb-starter-web:1.0.6-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/cloud/spring-cloud-xbb-starter-web/1.0.6-SNAPSHOT/spring-cloud-xbb-starter-web-1.0.6-20221124.024351-45.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/cloud/spring-cloud-xbb-starter-web/1.0.6-SNAPSHOT/spring-cloud-xbb-starter-web-1.0.6-20221124.024351-45-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/cloud/spring-cloud-xbb-starter-web/1.0.6-SNAPSHOT/spring-cloud-xbb-starter-web-1.0.6-20221124.024351-45-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

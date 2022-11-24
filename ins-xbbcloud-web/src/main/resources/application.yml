@@ -1,0 +1,60 @@
+spring:
+  application:
+    client_id: 20368
+    name: ins-xbbcloud-web
+    xbb:
+      web:
+        auth:
+          enabled: true
+          patterns:
+            - method: "*"
+              urlPattern: /hrm/employee/**
+              permissionCode: XBB_CLOUD_EMPLOYEE_LIST
+            - method: "*"
+              urlPattern: /hrm/org/**
+              permissionCode: XBB_CLOUD_ORG_MANAGER_MENU
+            - method: "*"
+              urlPattern: /schedule/detail/
+              permissionCode: XBB_CLOUD_LINE_SCHEDULED_LIST
+            - method: "POST"
+              urlPattern: /schedule
+              permissionCode: XBB_CLOUD_LINE_SCHEDULED_EDIT
+            - method: "POST"
+              urlPattern: /schedule/**/loop
+              permissionCode: XBB_CLOUD_LINE_SCHEDULED_LOOP
+            - method: "POST"
+              urlPattern: /schedule/**/publish
+              permissionCode: XBB_CLOUD_LINE_SCHEDULED_NOTIFY
+
+      jdbc:
+        enable: true
+        queryTimeout: 60
+server:
+  port: 8099
+
+grpc:
+  client:
+    ins-xhwallet-platform:
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+    ins-xbbcloud-platform:
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+    ins-xhportal-platform:
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+    ins-xhtask-platform:
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+    ins-assetxh-platform:
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+    ins-xhcrm-platform:
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext

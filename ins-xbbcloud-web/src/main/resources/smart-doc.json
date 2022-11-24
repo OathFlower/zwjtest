@@ -1,0 +1,15 @@
+{
+  "serverUrl": "https://cloud.xunhou.cn",
+  "isStrict": false,
+  "allInOne": true,
+  "isTornaDebug": false,
+  "outPath": "doc/xbbcloud",
+  "projectName": "xbbcloud-web",
+  "appToken": "4535e0c4b58247ffbd4cb9f57f91d66a",
+  "openUrl": "http://123.57.221.130:3005/api",
+  "debugEnvName": "qa",
+  "requestFieldToUnderline": true,
+  "responseFieldToUnderline": true,
+  "replace": true,
+  "debugEnvUrl": "https://cloud.xunhou.cn"
+}

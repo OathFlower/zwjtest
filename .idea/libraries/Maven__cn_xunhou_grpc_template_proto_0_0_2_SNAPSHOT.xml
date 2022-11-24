@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: cn.xunhou.grpc:template-proto:0.0.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/grpc/template-proto/0.0.2-SNAPSHOT/template-proto-0.0.2-20220922.021403-9.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/grpc/template-proto/0.0.2-SNAPSHOT/template-proto-0.0.2-20220922.021403-9-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/grpc/template-proto/0.0.2-SNAPSHOT/template-proto-0.0.2-20220922.021403-9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

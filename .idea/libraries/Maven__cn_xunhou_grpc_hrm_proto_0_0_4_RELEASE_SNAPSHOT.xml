@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: cn.xunhou.grpc:hrm-proto:0.0.4-RELEASE-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/grpc/hrm-proto/0.0.4-RELEASE-SNAPSHOT/hrm-proto-0.0.4-RELEASE-20221109.113504-2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/grpc/hrm-proto/0.0.4-RELEASE-SNAPSHOT/hrm-proto-0.0.4-RELEASE-20221109.113504-2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../software/repo/cn/xunhou/grpc/hrm-proto/0.0.4-RELEASE-SNAPSHOT/hrm-proto-0.0.4-RELEASE-20221109.113504-2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
